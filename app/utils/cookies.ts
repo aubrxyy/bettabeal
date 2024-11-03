@@ -1,9 +1,38 @@
-export function setCookie(name: string, value: string, days: number) {
+interface CookieOptions {
+  secure?: boolean;
+  sameSite?: 'Strict' | 'Lax' | 'None';
+  maxAge?: number; // maxAge in seconds
+  httpOnly?: boolean;
+  expires?: Date; // Optional expires attribute
+}
+
+export function setCookie(name: string, value: string, options: CookieOptions = {}) {
   if (typeof document === 'undefined') {
     return;
   }
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+
+  let cookieString = `${name}=${value}; path=/`;
+
+  if (options.expires) {
+    cookieString += `; expires=${options.expires.toUTCString()}`;
+  } else if (options.maxAge) {
+    const expires = new Date(Date.now() + options.maxAge * 1000).toUTCString();
+    cookieString += `; expires=${expires}`;
+  }
+
+  if (options.secure) {
+    cookieString += `; secure`;
+  }
+
+  if (options.httpOnly) {
+    cookieString += `; HttpOnly`;
+  }
+
+  if (options.sameSite) {
+    cookieString += `; SameSite=${options.sameSite}`;
+  }
+
+  document.cookie = cookieString;
 }
 
 export function getCookie(name: string): string | null {

@@ -27,7 +27,7 @@ export default function Register() {
         const username = (document.getElementById('username') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        fetch('https://api-bettabeal.dgeo.id/api/register/seller', {
+        fetch('https://api.bettabeal.my.id/api/register/customer', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -40,9 +40,7 @@ export default function Register() {
         .then(response => response.json())
         .then(data => {
           if (data.token) {
-            // Save token in localStorage
             localStorage.setItem('token', data.token);
-            // Set cookie for currentUser
             document.cookie = `currentUser=${data.token}; path=/;`;
             setSuccessMessage('Registration successful! Redirecting to home page.');
             setTimeout(() => {

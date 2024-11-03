@@ -28,7 +28,7 @@ export default function Login() {
         const username = (document.getElementById('username') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        fetch('https://api-bettabeal.dgeo.id/api/login', {
+        fetch('https://api.bettabeal.my.id/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -41,11 +41,11 @@ export default function Login() {
         .then(response => response.json())
         .then(data => {
           if (data.token) {
-            localStorage.setItem('token', data.token);
-            setCookie('currentUser', data.token, 1);
-            setCookie('userRole', data.user.role, 1);
-            setCookie('userId', data.user.user_id, 1);
-            setCookie('username', data.user.username, 1);
+            setCookie('currentUser', data.token, { secure: true, sameSite: 'Strict', maxAge: 3600 });
+            setCookie('userRole', data.user.role, { secure: true, sameSite: 'Strict', maxAge: 3600 });
+            setCookie('userId', data.user.user_id, { secure: true, sameSite: 'Strict', maxAge: 3600 });
+            setCookie('username', data.user.username, { secure: true, sameSite: 'Strict', maxAge: 3600 });
+            localStorage.setItem('token', data.user.token);
 
             if (data.user.role === 'seller') {
               setSuccessMessage('Login successful! Redirecting to dashboard.');

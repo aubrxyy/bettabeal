@@ -8,7 +8,6 @@ export function middleware(request: NextRequest) {
   console.log('User Role:', userRole);
   console.log('Request Path:', request.nextUrl.pathname);
 
-  // Allow access to public assets and specific public pages
   const publicPaths = ['/', '/login', '/register', '/public', '/framebg.jpg', '/logoBB.png'];
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path));
 
