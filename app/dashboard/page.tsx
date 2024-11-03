@@ -11,7 +11,7 @@ interface Seller {
 
 export default function Dashboard() {
   const [userData, setUserData] = useState<Seller | null>(null);
-  const [userId, setUserId] = useState<String | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const id = getCookie('userId');
