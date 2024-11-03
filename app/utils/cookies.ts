@@ -1,9 +1,8 @@
 interface CookieOptions {
   secure?: boolean;
   sameSite?: 'Strict' | 'Lax' | 'None';
-  maxAge?: number; // maxAge in seconds
-  httpOnly?: boolean;
-  expires?: Date; // Optional expires attribute
+  maxAge?: number;
+  expires?: Date;
 }
 
 export function setCookie(name: string, value: string, options: CookieOptions = {}) {
@@ -23,11 +22,7 @@ export function setCookie(name: string, value: string, options: CookieOptions = 
   if (options.secure) {
     cookieString += `; secure`;
   }
-
-  if (options.httpOnly) {
-    cookieString += `; HttpOnly`;
-  }
-
+  
   if (options.sameSite) {
     cookieString += `; SameSite=${options.sameSite}`;
   }
