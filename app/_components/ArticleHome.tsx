@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import { Poppins } from 'next/font/google';
+import Image from 'next/image';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -22,24 +22,20 @@ export function ArticleHome() {
                   <a href='/article1' className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-fit pb-20 rounded-xl'>
                     <Image src="/articledummy.png" alt='Article 1' width={700} height={500} className='w-full mx-auto'/>
                     <h1 className={`${poppins.className} ml-4 mt-4 text-xl`}>
-                      Cupang Giant
+                      Black Samurai, Ikan Cupang Langka Bernilai Fantastis
                     </h1>
                     <p className={`${poppinsR.className} mx-4 text-sm mt-4 text-gray-500 leading-6 text-justify`}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam labore dolores similique magnam quidem vero libero exercitationem, illum, nobis corporis quaerat necessitatibus reiciendis ut tempora asperiores, quis inventore placeat ea!
-                      Quasi, corrupti sint cum fugiat consequuntur itaque perspiciatis quod vero optio reprehenderit aliquam! Cupiditate maiores beatae, aliquid itaque pariatur voluptatum et modi nam illo dolore ratione blanditiis esse corrupti sapiente?
-                      Quae animi nihil repellat minima velit eos, accusamus assumenda explicabo quas! Perspiciatis optio non, rerum reiciendis sequi sit dicta, ex temporibus illum, officiis a sint ab cupiditate beatae dignissimos enim.
+                      Bagi Anda yang hobi memelihara ikan cupang, pasti sudah tidak asing lagi kalau hewan air yang satu ini bisa memiliki harga fantastis. Dari 50-an jenis ikan cupang yang ada di Indonesia, hanya ada sekitar lima jenis saja yang dijual dengan harga tinggi, salah satunya adalah jenis cupang black samurai.
                     </p>
                   </a>
                   
                   <a href='/article2' className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-fit pb-20 rounded-xl'>
                     <Image src="/articledummy.png" alt='Article 2' width={700} height={500} className='w-full mx-auto'/>
                     <h1 className={`${poppins.className} ml-4 mt-4 text-xl`}>
-                      Cupang Giant
+                      Rahasia Pesona Ikan Cupang: Keindahan dan Perawatan yang Menakjubkan
                     </h1>
                     <p className={`${poppinsR.className} mx-4 text-sm mt-4 text-gray-500 leading-6 text-justify`}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam labore dolores similique magnam quidem vero libero exercitationem, illum, nobis corporis quaerat necessitatibus reiciendis ut tempora asperiores, quis inventore placeat ea!
-                      Quasi, corrupti sint cum fugiat consequuntur itaque perspiciatis quod vero optio reprehenderit aliquam! Cupiditate maiores beatae, aliquid itaque pariatur voluptatum et modi nam illo dolore ratione blanditiis esse corrupti sapiente?
-                      Quae animi nihil repellat minima velit eos, accusamus assumenda explicabo quas! Perspiciatis optio non, rerum reiciendis sequi sit dicta, ex temporibus illum, officiis a sint ab cupiditate beatae dignissimos enim.
+                     Ikan cupang adalah salah satu ikan hias yang paling digemari di dunia karena warna-warnanya yang mencolok dan keindahan siripnya yang khas. Di balik penampilannya yang menarik, ikan cupang juga dikenal sebagai ikan yang mudah dipelihara dengan perawatan yang tepat. Dalam artikel ini, kita akan membahas rahasia pesona ikan cupang, termasuk bagaimana cara memelihara mereka agar tetap sehat dan berwarna cerah.
                     </p>
                   </a>
                 </div>

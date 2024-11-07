@@ -55,7 +55,7 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 flex justify-between items-center bg-white p-4 z-10 shadow-md">
+    <header className="px-10 fixed top-0 left-0 right-0 flex justify-between items-center bg-white p-4 z-10 shadow-sm">
       <div className="flex items-center">
         <a href='/dashboard'>
           <Image src="/logoBB.png" alt="Logo" width={150} height={200} />
@@ -69,8 +69,11 @@ export default function Header() {
           />
         </div>
       </div>
-      <div>
-        <span className="ml-4 text-gray-700">{username}</span>
+      <div className='flex flex-row'>
+        <div className="rounded-full size-8 bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-center text-white mt-1 ">
+          <p className='mt-1'>{username ? username.charAt(0).toUpperCase() : ''}</p>
+        </div>
+        <span className="ml-4 text-gray-700 items-center flex justify-center">{username}</span>
       </div>
       <div>
         <button onClick={handleLogout} className="bg-red-500 text-white p-2 rounded">Logout</button>

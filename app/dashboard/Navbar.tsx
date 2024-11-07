@@ -16,40 +16,62 @@ const Navbar = () => {
       {isSidebarVisible && (
         <div className="h-screen bg-white pr-4 text-[#38B6FF] pt-24 relative flex flex-col">
           <nav className="flex-1 ">
-            <ul className='flex flex-col space-y-2'>
+            <ul className='flex flex-col'>
               <li>
                 <a
                   href="/dashboard"
-                  className={`items-center flex flex-row py-3 px-16 hover:bg-gradient-to-b hover:from-[#0F4A99] hover:to-[#38B6FF] hover:text-white rounded-r-3xl transition-all ${pathname === '/dashboard' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/dashboard' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                <Icon icon="line-md:home" className='mr-4' />
+                <Icon icon="line-md:home" className='mr-4 size-5' />
                   Dashboard
                 </a>
               </li>
               <li>
                 <a
                   href="/profile"
-                  className={`items-center flex flex-row py-3 px-16 hover:bg-gradient-to-b hover:from-[#0F4A99] hover:to-[#38B6FF] hover:text-white rounded-r-3xl transition-all ${pathname === '/profile' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/profile' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  Profile
+                  <Icon icon="line-md:list" className='mr-4 size-5' />
+                  Order
                 </a>
               </li>
               <li>
                 <a
                   href="/settings"
-                  className={`items-center flex flex-row py-3 px-16 hover:bg-gradient-to-b hover:from-[#0F4A99] hover:to-[#38B6FF] hover:text-white rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  Settings
+                  <Icon icon="tdesign:tag" className='mr-4 size-5' />
+                  Product
                 </a>
               </li>
               <li>
                 <a
-                  href="/support"
-                  className={`items-center flex flex-row py-3 px-16 hover:bg-gradient-to-b hover:from-[#0F4A99] hover:to-[#38B6FF] hover:text-white rounded-r-3xl transition-all ${pathname === '/support' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/settings"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  Support
+                  <Icon icon="tabler:article" className='mr-4 size-5' />
+                  Article
                 </a>
               </li>
+              <li>
+                <a
+                  href="/settings"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                >
+                  <Icon icon="bxs:chat" className='mr-4 size-5' />
+                  Chat
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/settings"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                >
+                  <Icon icon="mingcute:settings-6-line" className='mr-4 size-5' />
+                  Settings
+                </a>
+              </li>
+              
             </ul>
           </nav>
           <button

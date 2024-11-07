@@ -4,10 +4,16 @@ import { useEffect, useState } from 'react';
 import { getCookie } from '../utils/cookies';
 import Header from './Header';
 import Navbar from './Navbar';
+import { Inter } from 'next/font/google';
 
 interface Seller {
   email: string;
 }
+
+const interB = Inter({
+  subsets: ['latin'],
+  weight: '600',
+})
 
 export default function Dashboard() {
   const [userData, setUserData] = useState<Seller | null>(null);
@@ -39,13 +45,30 @@ export default function Dashboard() {
       <Header />
       <Navbar />
       <div className="flex-1" style={{ background: 'linear-gradient(to right, #1DACFE 45%, #7ec9f2 94%)' }}>
-        <div className="p-4 mt-[4.63rem]">
-          Dashboard
-          {userData && (
+        <div className="px-5 py-4 mt-[4.63rem]">
+          <h1 className={`text-white text-2xl mt-2 mb-4 ${interB.className}`}>Dashboard</h1>
+          <div className="grid grid-cols-5 gap-2 md:gap-4 xl:gap-8 mb-8">
+            <div className='h-16 bg-white rounded-md'></div>
+            <div className='h-16 bg-white rounded-md'></div>
+            <div className='h-16 bg-white rounded-md'></div>
+            <div className='h-16 bg-white rounded-md'></div>
+            <div className='h-16 bg-white rounded-md'></div>
+          </div>
+          <div className="grid grid-cols-7 gap-2 md:gap-4 xl:gap-8 mb-8">
+            <div className='h-96 bg-white rounded-md col-span-5'></div>
+            <div className='h-96 bg-white rounded-md col-span-2'></div>
+          </div>
+          <div className="grid grid-cols-7 gap-2 md:gap-4 xl:gap-8 mb-8">
+            <div className='h-96 bg-white rounded-md col-span-5'></div>
+            <div className='h-96 bg-white rounded-md col-span-2'></div>
+          </div>
+          
+          {/* Dashboard */}
+          {/* {userData && (
             <span className="ml-4 text-gray-700">
               {userData.email}
             </span>
-          )}
+          )} */}
         </div>
       </div>
     </div>
