@@ -16,7 +16,7 @@ const interB = Inter({
 })
 
 export default function Dashboard() {
-  const [userData, setUserData] = useState<Seller | null>(null);
+  const [, setUserData] = useState<Seller | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {

@@ -26,19 +26,9 @@ const poppinsB = Poppins({
   weight: '700',
 });
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: '600',
-});
-
-const poppinsR = Poppins({
-  subsets: ['latin'],
-  weight: '400',
-});
-
 export function NewArrival() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [fade, setFade] = useState(false);
+  const [, setFade] = useState(false);
 
   useEffect(() => {
     setFade(true);

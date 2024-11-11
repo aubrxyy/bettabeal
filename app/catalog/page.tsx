@@ -51,13 +51,13 @@ export default function Catalog() {
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const initialSearchTerm = searchParams.get('search') || '';
   const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
   const [fade, setFade] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [searchTerm] = useState(initialSearchTerm);
   const [categorySearchTerm, setCategorySearchTerm] = useState('');
 
   useEffect(() => {
@@ -115,12 +115,6 @@ export default function Catalog() {
 
   const getProductCountByCategory = (categoryId: number) => {
     return allProducts.filter(product => product.category_id === categoryId).length;
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1);
-    router.push(`/catalog?page=1&search=${event.target.value}`);
   };
 
   const handleCategorySearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
