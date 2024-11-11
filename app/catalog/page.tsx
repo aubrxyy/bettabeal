@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Rating } from '@mui/material';
 import { Inter, Poppins } from 'next/font/google';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import BreadcrumbsComponent from '../_components/Breadcrumbs';
@@ -45,7 +45,7 @@ const interB = Inter({
   weight: '700',
 });
 
-export default function Catalog() {
+function CatalogContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
@@ -57,7 +57,7 @@ export default function Catalog() {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
   const [fade, setFade] = useState(false);
-  const [searchTerm] = useState(initialSearchTerm);
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [categorySearchTerm, setCategorySearchTerm] = useState('');
 
   useEffect(() => {
@@ -117,6 +117,12 @@ export default function Catalog() {
     return allProducts.filter(product => product.category_id === categoryId).length;
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
+    router.push(`/catalog?page=1&search=${event.target.value}`);
+  };
+
   const handleCategorySearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategorySearchTerm(event.target.value);
   };
@@ -169,7 +175,7 @@ export default function Catalog() {
       <div className="flex flex-col min-h-screen">
         <div className="flex-grow flex mx-40 mb-20">
           <div className="w-1/3 px-4">
-            <h2 className={`text-xl mb-4 text-[#0F4A99] ${interB.className}`}>Categories</h2>
+            <h2 className={`text-xl mb-4 text-[#0F4A99] ${interB.className}`}>Kategori</h2>
             <hr />
             <div className="relative my-4">
               <Icon icon="mynaui:search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon" width={20} height={20} />
@@ -200,6 +206,16 @@ export default function Catalog() {
             <h2 className="text-md font-bold mb-4 text-gray-500">
               Available Products: <span className='text-[#0F4A99] text-lg'>{filteredProducts.length}</span>
             </h2>
+            <div className="relative my-4">
+              <Icon icon="mynaui:search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon" width={20} height={20} />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className={`block w-full pl-10 xl:pr-12 py-3 bg-gray-100 text-[#0F4A99] accent-[#0F4A99] outline-none rounded-md placeholder-gray-400 sm:text-sm`}
+                placeholder="Search Products"
+              />
+            </div>
             <div className={`transition-opacity duration-500 ${fade ? 'opacity-0' : 'opacity-100'}`}>
               <div className="grid grid-cols-3 gap-8">
                 {paginatedProducts.map(product => (
@@ -249,5 +265,13 @@ export default function Catalog() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function Catalog() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CatalogContent />
+    </Suspense>
   );
 }
