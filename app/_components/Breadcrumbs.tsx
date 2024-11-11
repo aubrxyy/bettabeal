@@ -4,18 +4,11 @@ import Link from 'next/link';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 
-interface Product {
-  product_name: string;
-  category: {
-    category_name: string;
-  };
-}
-
 export default function BreadcrumbsComponent() {
   const pathname = usePathname();
   const pathnames = pathname.split('/').filter((x) => x);
   const [productName, setProductName] = useState<string | null>(null);
-  const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [, setCategoryName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProductDetails = async (id: string) => {

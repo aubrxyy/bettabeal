@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { Rating } from '@mui/material';
 import { Inter, Poppins } from 'next/font/google';
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -133,12 +132,6 @@ function CatalogContent() {
 
   const getProductCountByCategory = (categoryId: number) => {
     return allProducts.filter(product => product.category_id === categoryId).length;
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1);
-    router.push(`/catalog?page=1&search=${event.target.value}`);
   };
 
   const handleCategorySearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
