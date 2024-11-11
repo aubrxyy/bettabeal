@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { Rating } from '@mui/material';
-import { Poppins } from 'next/font/google';
+import { Poppins, Inter } from 'next/font/google';
 import React, { useEffect, useState } from 'react';
+import { Icon } from '@iconify/react';
 
 interface Product {
   product_id: number;
@@ -19,11 +19,20 @@ interface Product {
   main_image: {
     image_url: string;
   } | null;
+  rating: number;
+  category: {
+    category_name: string;
+  };
 }
 
 const poppinsB = Poppins({
   subsets: ['latin'],
   weight: '700',
+});
+
+const interSB = Inter({
+  subsets: ['latin'],
+  weight: '600',
 });
 
 export function NewArrival() {
@@ -37,7 +46,7 @@ export function NewArrival() {
       .then(data => {
         if (data.status === 'success') {
           const activeProducts = data.data.data.filter((product: Product) => product.is_active);
-          setProducts(activeProducts.slice(0, 5)); // Limit to 5 products
+          setProducts(activeProducts.slice(0, 5));
         }
         setTimeout(() => setFade(false), 500);
       })
@@ -47,24 +56,48 @@ export function NewArrival() {
       });
   }, []);
 
+  const formatPrice = (price: string) => {
+    const number = parseInt(price, 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `Rp${number}`;
+  };
+
+  const isNewProduct = (createdAt: string) => {
+    const createdDate = new Date(createdAt);
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
+  };
+
   return (
-    <div className='max-sm:mx-4 sm:mx-8 md:mx-12 lg:mx-36 my-6 flex justify-center flex-col'>
-        <div className='mt-12'>
-          <h4 className='text-xl text-blue-800 underline underline-offset-8'>
-            New Arrival
+    <div className='max-sm:mx-4 sm:mx-8 md:mx-12 lg:mx-36 flex justify-center flex-col'>
+        <div className='mt-16'>
+          <h4 className={`${poppinsB.className} text-4xl text-[#0F4A99] flex flex-row text-nowrap`}>
+            <div className='h-[0.125rem] w-8 bg-gray-300 mr-4 my-auto'></div> Latest products <div className='h-[0.125rem] w-full bg-gray-300 ml-4 my-auto'></div>
           </h4>
-            <div className='flex flex-wrap mt-12 justify-center gap-12'>
+            <div className='flex flex-wrap mt-12 justify-center gap-8'>
             {products.map(product => (
-              <div key={product.product_id} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[16%] min-h-96 max-h-fit rounded-lg'>
-                <Image src={product.main_image ? product.main_image.image_url : '/placeholder.png'} alt={product.product_name} width={135} height={200} className='mx-auto mt-6 w-40 h-48'/>
-                <h1 className={`${poppinsB.className} ml-4 my-2 text-base break-words`}>{product.product_name}</h1>
-                <Rating name="read-only" value={5} precision={0.5} size="small" className="ml-3" readOnly />
-                <h2 className={`${poppinsB.className} ml-4 mt-2 text-xs`}>Price range</h2>
-                  <p className={`ml-4 mt-2 text-xs text-[#0F4A99]`}>
-                        Rp {product.price} / ekor
-                      </p>
-                <button className={`${poppinsB.className} text-nowrap text-white bg-[#0F4A99] my-3 flex rounded-lg px-7 py-[6px] text-sm mx-auto transition-all hover:bg-[#0a356e]`}>
-                    Beli Sekarang
+              <div key={product.product_id} className='relative bg-gray-200 w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
+                
+                <Image src={product.main_image ? product.main_image.image_url : '/placeholder.png'} alt={product.product_name} width={135} height={200} className='mx-auto mb-2 mt-6 w-40 h-48'/>
+                {isNewProduct(product.created_at) && (
+                  <span className={`${poppinsB.className} ml-4 bg-gradient-to-b from-[#CF1669] to-[#FF3A44] text-white text-xs px-2 rounded-lg`}>NEW</span>
+                )}
+                <h1 className={`${poppinsB.className} mx-4 mt-1 text-md break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {product.product_name}
+                </h1>
+                <h2 className={`${interSB.className} mx-4 text-sm text-gray-500 break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {product.category.category_name}
+                </h2>
+                <div className="flex items-center ml-4 my-1">
+                  <Icon icon="ic:baseline-star" className='text-yellow-500'/>
+                  <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.5</span>
+                </div>
+                <p className={`${interSB.className} ml-4 text-md text-[#0F4A99]`}>
+                    {formatPrice(product.price)} / ekor
+                </p>
+                <button className={`${interSB.className} text-nowrap text-white bg-[#0F4A99] my-3 flex rounded-lg px-12 py-[6px] text-sm mx-auto transition-all hover:bg-[#0a356e]`}>
+                    Buy now
                 </button>
               </div>
             ))}

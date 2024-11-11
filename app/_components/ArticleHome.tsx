@@ -14,6 +14,11 @@ const poppinsR = Poppins({
   weight: '400',
 });
 
+const poppinsB = Poppins({
+  subsets: ['latin'],
+  weight: '700',
+});
+
 interface Article {
   article_id: number;
   title: string;
@@ -46,18 +51,18 @@ export function ArticleHome() {
 
   return (
     <div className={`transition-opacity duration-500 ${fade ? 'opacity-0' : 'opacity-100'} sm:mx-8 md:mx-20 lg:mx-36 flex justify-center flex-col`}>
-      <div className='mt-6 mb-20'>
-        <h4 className='text-xl text-blue-800 underline underline-offset-8'>
-          Articles
+      <div className='mt-16 mb-20'>
+        <h4 className={`${poppinsB.className} text-4xl text-[#0F4A99] flex flex-row text-nowrap`}>
+            <div className='h-[0.125rem] w-8 bg-gray-300 mr-4 my-auto'></div> Recent articles <div className='h-[0.125rem] w-full bg-gray-300 ml-4 my-auto'></div>
         </h4>
         <div className='flex flex-wrap mt-12 justify-center gap-5'>
           {articles.map(article => (
             <a key={article.article_id} href={`/article/${article.article_id}`} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-[32rem] pb-20 rounded-xl'>
-              <Image src={article.image ? `https://api.bettabeal.my.id${article.image}` : '/placeholder.png'} alt={article.title} width={700} height={500} className='w-full mx-auto h-72 object-cover'/>
-              <h1 className={`${poppins.className} ml-4 mt-4 text-xl`}>
+              <Image src={article.image ? `https://api.bettabeal.my.id${article.image}` : '/placeholder.png'} alt={article.title} width={700} height={500} className='w-full mx-auto h-72 object-cover rounded-tl-xl rounded-tr-xl'/>
+              <h1 className={`${poppins.className} ml-4 mt-4 text-xl text-[#0F4A99] line-clamp-2`}>
                 {article.title}
               </h1>
-              <p className={`${poppinsR.className} mx-4 text-sm mt-4 text-gray-500 leading-6 text-justify line-clamp-5`}>
+              <p className={`${poppinsR.className} mx-4 text-sm mt-2 text-gray-500 leading-6 text-justify line-clamp-5`}>
                 {article.content}
               </p>
             </a>

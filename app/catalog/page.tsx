@@ -7,6 +7,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import BreadcrumbsComponent from '../_components/Breadcrumbs';
+import Link from 'next/link';
 
 interface Category {
   category_id: number;
@@ -33,6 +34,10 @@ interface Product {
   main_image: {
     image_url: string;
   } | null;
+  rating: number;
+  category: {
+    category_name: string;
+  };
 }
 
 const poppinsB = Poppins({
@@ -43,6 +48,11 @@ const poppinsB = Poppins({
 const interB = Inter({
   subsets: ['latin'],
   weight: '700',
+});
+
+const interSB = Inter({
+  subsets: ['latin'],
+  weight: '600',
 });
 
 function CatalogContent() {
@@ -59,6 +69,10 @@ function CatalogContent() {
   const [fade, setFade] = useState(false);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [categorySearchTerm, setCategorySearchTerm] = useState('');
+  const formatPrice = (price: string) => {
+    const number = parseInt(price, 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `Rp${number}`;
+  };
 
   useEffect(() => {
     fetch('https://api.bettabeal.my.id/api/categories')
@@ -102,6 +116,10 @@ function CatalogContent() {
         setFade(false);
       });
   }, [currentPage]);
+
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+  }, [initialSearchTerm]);
 
   const handleCategoryChange = (categoryId: number) => {
     setSelectedCategories(prevSelectedCategories =>
@@ -167,15 +185,23 @@ function CatalogContent() {
     return buttons;
   };
 
+  const isNewProduct = (createdAt: string) => {
+    const createdDate = new Date(createdAt);
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
+  };
+
   return (
     <>
-      <div className='mt-8 mb-12 ml-24'>
+      <div className='mt-8 mb-12 ml-4 sm:ml-8 md:ml-12 lg:ml-24'>
         <BreadcrumbsComponent />
       </div>
       <div className="flex flex-col min-h-screen">
-        <div className="flex-grow flex mx-40 mb-20">
-          <div className="w-1/3 px-4">
-            <h2 className={`text-xl mb-4 text-[#0F4A99] ${interB.className}`}>Kategori</h2>
+        <div className="flex-grow flex flex-col lg:flex-row mx-auto mb-20">
+          <div className="w-full lg:w-1/3 px-4">
+            <h2 className={`text-xl mb-4 text-[#0F4A99] ${interB.className}`}>Categories</h2>
             <hr />
             <div className="relative my-4">
               <Icon icon="mynaui:search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon" width={20} height={20} />
@@ -206,39 +232,43 @@ function CatalogContent() {
             <h2 className="text-md font-bold mb-4 text-gray-500">
               Available Products: <span className='text-[#0F4A99] text-lg'>{filteredProducts.length}</span>
             </h2>
-            <div className="relative my-4">
-              <Icon icon="mynaui:search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon" width={20} height={20} />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className={`block w-full pl-10 xl:pr-12 py-3 bg-gray-100 text-[#0F4A99] accent-[#0F4A99] outline-none rounded-md placeholder-gray-400 sm:text-sm`}
-                placeholder="Search Products"
-              />
-            </div>
             <div className={`transition-opacity duration-500 ${fade ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="grid grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {paginatedProducts.map(product => (
-                  <div key={product.product_id} className="bg-gray-200 w-64 h-[28rem] rounded-2xl">
+                  <Link key={product.product_id} href={`/catalog/${product.product_id}`} className="bg-gray-200 w-full min-h-96 h-fit pb-6 rounded-2xl cursor-pointer">
                     <Image
                       src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
                       alt={product.product_name}
                       width={200}
                       height={200}
-                      className="mx-auto mt-6 w-48 h-60 object-cover shadow-md"
+                      className="mx-auto mb-2 mt-6 w-48 h-60 object-cover shadow-md"
                     />
-                    <h1 className={`${poppinsB.className} ml-4 my-2 text-base`}>{product.product_name}</h1>
-                    <Rating name="read-only" value={5} precision={0.5} size="small" className="ml-3" readOnly />
-                    <h2 className={`${poppinsB.className} ml-4 mt-2 text-xs`}>Price range</h2>
-                    <p className={`ml-4 mt-2 text-xs text-[#0F4A99]`}>
-                      Rp {product.price} / ekor
-                    </p>
-                    <button
-                      className={`mt-3 text-nowrap text-white bg-[#0F4A99] flex rounded-lg px-[4.5rem] py-2 text-xs mx-auto transition-all hover:bg-[#0a356e]`}
-                    >
-                      Beli Sekarang
-                    </button>
-                  </div>
+                    <div className='flex flex-row mx-4 items-end'>
+                      <h1 className={`${poppinsB.className} mt-2 text-md break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {product.product_name}
+                      </h1>
+                        {isNewProduct(product.created_at) ? (
+                          <span className={`${poppinsB.className} ml-2 bg-gradient-to-b from-[#CF1669] to-[#FF3A44] text-white text-xs px-2 rounded-lg h-6 flex items-center`}>NEW</span>
+                        ) : (
+                          <span className="ml-2 text-xs px-2 rounded-lg h-6 flex items-center invisible">NEW</span>
+                        )}
+                    </div>
+                    <h2 className={`${interSB.className} mx-4 text-sm text-gray-500 break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {product.category.category_name}
+                    </h2>
+                <div className="flex items-center ml-4 my-1">
+                  <Icon icon="ic:baseline-star" className='text-yellow-500'/>
+                  <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.5</span>
+                  <p className={`${interSB.className} ml-2 text-md text-[#0F4A99]`}>
+                    | {formatPrice(product.price)}
+                  </p>
+                </div>
+                  <button
+                    className={`${interSB.className} mt-3 text-nowrap text-white bg-[#0F4A99] flex rounded-lg w-[90%] sm:w-52 md:w-40 lg:w-44 xl:w-52 justify-center py-2 text-sm mx-auto transition-all hover:bg-[#0a356e]`}
+                  >
+                    Buy now
+                  </button>
+                  </Link>
                 ))}
               </div>
               {filteredProducts.length > 12 && (
