@@ -24,9 +24,6 @@ export default function Home() {
       <Hero />
       <NewArrival />
       <ArticleHome />
-      <div className="py-2">
-        <button onClick={handleLogout} className="bg-red-500 text-white p-2 rounded flex mx-auto">Logout</button>
-      </div>
     </>
   );
 }
