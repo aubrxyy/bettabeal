@@ -14,7 +14,7 @@ export function Footer() {
           <div className="w-full lg:w-1/2">
             <Image src="/logowhite.png" alt="Logo" width={110} height={100} />
             <p className="w-full min-w-[30ch] lg:w-[50ch] text-justify text-sm mt-6 leading-7">
-              Temukan keindahan dan keunikan ikan cupang terbaik di sini. Kami menghadirkan koleksi ikan cupang berkualitas dengan variasi warna memukau dan karakter yang kuat. Dari penggemar pemula hingga kolektor berpengalaman, Bettabeal adalah tempat yang tepat untuk mempercantik akuarium Anda.
+              Temukan keindahan dan keunikan ikan cupang terbaik di sini. Kami menghadirkan koleksi ikan cupang berkualitas dengan variasi warna memukau dan karakter yang kuat. Dari penggemar pemula hingga kolektor berpengalaman, BettaBeal adalah tempat yang tepat untuk mempercantik akuarium Anda.
             </p>
             <div className="flex flex-row mt-12 space-x-8">
               <a href="/">
