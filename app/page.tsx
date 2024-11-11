@@ -1,10 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import { setCookie } from './utils/cookies';
-import { NewArrival } from './_components/NewArrival';
-import { Hero } from './_components/Hero';
 import { ArticleHome } from './_components/ArticleHome';
+import { Hero } from './_components/Hero';
+import { NewArrival } from './_components/NewArrival';
+import { setCookie } from './_utils/cookies';
 
 export default function Home() {
   const router = useRouter();

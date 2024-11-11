@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { getCookie, setCookie } from '../utils/cookies';
-import Image from 'next/image';
 import { Icon } from '@iconify/react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getCookie, setCookie } from '../_utils/cookies';
 
 export default function Header() {
   const router = useRouter();

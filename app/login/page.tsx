@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Inter } from 'next/font/google';
-import { setCookie } from '../utils/cookies';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { setCookie } from '../_utils/cookies';
 
 const inter = Inter({
   subsets: ['latin'],

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Inter } from 'next/font/google';
 import { Icon } from '@iconify/react';
@@ -31,8 +31,10 @@ const navigation = [
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const controlHeader = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -55,8 +57,18 @@ export function Header() {
     }
   }, [controlHeader]);
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      router.push(`/catalog?search=${searchTerm}`);
+    }
+  };
+
   return (
-    <Disclosure as="nav" className={`z-[1000] sticky top-0 bg-white transition-transform duration-300 shadow-xl ${interM.className} ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}>
+    <Disclosure as="nav" className={`z-[1000] sticky top-0 bg-white transition-transform duration-300 shadow-md ${interM.className} ${showHeader ? 'translate-y-0' : '-translate-y-full'}`}>
       {({ open }) => (
         <>
           <div className="z-100 mx-auto max-w-[95%] px-2 sm:px-6 lg:px-8">
@@ -84,6 +96,9 @@ export function Header() {
                       <Icon icon="mynaui:search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 icon" width={20} height={20} />
                       <input
                         type="text"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleSearchKeyPress}
                         className={`block w-full pl-10 xl:pr-12 py-3 border border-blue-600 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${interR.className}`}
                         placeholder="Search"
                       />

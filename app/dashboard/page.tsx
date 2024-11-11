@@ -1,10 +1,10 @@
 'use client'
 
+import { Inter } from 'next/font/google';
 import { useEffect, useState } from 'react';
-import { getCookie } from '../utils/cookies';
+import { getCookie } from '../_utils/cookies';
 import Header from './Header';
 import Navbar from './Navbar';
-import { Inter } from 'next/font/google';
 
 interface Seller {
   email: string;
