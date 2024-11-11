@@ -228,7 +228,7 @@ function CatalogContent() {
             <div className={`transition-opacity duration-500 ${fade ? 'opacity-0' : 'opacity-100'}`}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {paginatedProducts.map(product => (
-                  <Link key={product.product_id} href={`/catalog/${product.product_id}`} className="bg-gray-200 w-full min-h-96 h-fit pb-6 rounded-2xl cursor-pointer">
+                  <Link key={product.product_id} href={`/catalog/${product.product_id}`} className="bg-gray-200 lg:w-60 xl:w-64 min-h-96 h-fit pb-6 rounded-2xl cursor-pointer">
                     <Image
                       src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
                       alt={product.product_name}
