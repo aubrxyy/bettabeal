@@ -35,7 +35,7 @@ export function ArticleHome() {
 
   useEffect(() => {
     setFade(true);
-    fetch(`${process.env.API_URL}/api/article`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article`)
       .then(response => response.json())
       .then(data => {
         if (data.code === '000') {

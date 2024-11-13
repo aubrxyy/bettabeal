@@ -27,7 +27,7 @@ export default function Register() {
         const username = (document.getElementById('username') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        fetch(`${process.env.API_URL}/api/register/customer`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register/customer`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export default function Register() {
             setSuccessMessage('Registration successful! Redirecting to home page.');
             setTimeout(() => {
               window.location.href = '/';
-            }, 1000);
+            }, 1000); // Redirect after 1 second
           } else {
             setErrorMessage('Registration failed, please check your details!');
           }
