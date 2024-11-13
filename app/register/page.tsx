@@ -27,7 +27,7 @@ export default function Register() {
         const username = (document.getElementById('username') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        fetch('https://api.bettabeal.my.id/api/register/customer', {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/register/customer`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

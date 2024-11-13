@@ -28,7 +28,7 @@ export default function Login() {
         const username = (document.getElementById('username') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        fetch('https://api.bettabeal.my.id/api/login', {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -41,10 +41,7 @@ export default function Login() {
         .then(response => response.json())
         .then(data => {
           if (data.token) {
-            setCookie('currentUser', data.token, { secure: true, sameSite: 'Strict', maxAge: 3600 });
-            setCookie('userRole', data.user.role, { secure: true, sameSite: 'Strict', maxAge: 3600 });
-            setCookie('userId', data.user.user_id, { secure: true, sameSite: 'Strict', maxAge: 3600 });
-            setCookie('username', data.user.username, { secure: true, sameSite: 'Strict', maxAge: 3600 });
+            setCookie('USR', data.token, { secure: true, sameSite: 'Strict', maxAge: 3600 });
             localStorage.setItem('token', data.user.token);
 
             if (data.user.role === 'seller') {

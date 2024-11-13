@@ -34,7 +34,7 @@ export default function Header() {
 
   useEffect(() => {
     if (userId) {
-      fetch(`https://api.bettabeal.my.id/api/sellers/${userId}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${userId}`)
         .then(response => response.json())
         .catch(error => console.error('Error fetching user data:', error));
     }

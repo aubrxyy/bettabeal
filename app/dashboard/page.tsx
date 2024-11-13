@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (userId) {
-      fetch(`https://api.bettabeal.my.id/api/sellers/${userId}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${userId}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

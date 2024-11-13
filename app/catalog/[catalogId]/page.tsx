@@ -1,12 +1,14 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Rating } from '@mui/material';
 import { Inter } from 'next/font/google';
 import BreadcrumbsComponent from '@/app/_components/Breadcrumbs';
 import { Icon } from '@iconify/react';
+import Cookies from 'js-cookie';
+import { showToast } from '@/app/toastManager';
 
 const interB = Inter({
   subsets: ['latin'],
@@ -23,6 +25,7 @@ interface Product {
   product_name: string;
   description: string;
   price: string;
+  stock_quantity: number;
   main_image: {
     image_url: string;
   } | null;
@@ -36,11 +39,26 @@ interface Product {
   };
 }
 
+interface CartItem {
+  cart_item_id: number;
+  product: {
+    product_id: number;
+    name: string;
+    price: string;
+  };
+  quantity: number;
+  total_price: number;
+}
+
 export default function ProductDetail() {
   const params = useParams();
+  const router = useRouter();
   const id = params.catalogId;
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [cartQuantity, setCartQuantity] = useState<number | null>(null);
+
   const formatPrice = (price: string) => {
     const number = parseInt(price, 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `Rp${number}`;
@@ -48,7 +66,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (id) {
-      fetch(`https://api.bettabeal.my.id/api/products/${id}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Product not found');
@@ -69,6 +87,78 @@ export default function ProductDetail() {
     }
   }, [id]);
 
+  useEffect(() => {
+    const token = Cookies.get('USR');
+    if (token) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            const cartItem = data.data.items.find((item: CartItem) => item.product.product_id === product?.product_id);
+            if (cartItem) {
+              setCartQuantity(cartItem.quantity);
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching cart:', error);
+        });
+    }
+  }, [product]);
+
+  const handleAddToCart = () => {
+    const token = Cookies.get('USR');
+    if (!token) {
+      showToast('Please log in to add items to the cart.', { type: 'error' });
+      router.push('/login');
+      return;
+    }
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product_id: product?.product_id,
+        quantity,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          const newCartQuantity = (cartQuantity !== null ? cartQuantity + quantity : quantity);
+          setCartQuantity(newCartQuantity);
+          showToast(`'${product?.product_name}' added to cart. Total in cart: ${newCartQuantity}`, { type: 'success' });
+        } else {
+          showToast('Failed to add product to cart', { type: 'error' });
+        }
+      })
+      .catch(error => {
+        console.error('Error adding product to cart:', error);
+        showToast('Failed to add product to cart', { type: 'error' });
+      });
+  };
+
+  const increaseQuantity = () => {
+    if (product && quantity < product.stock_quantity) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -82,31 +172,41 @@ export default function ProductDetail() {
       <div className='mt-8 mb-12 ml-24'>
         <BreadcrumbsComponent />
       </div>
-        <div className="flex flex-row items-center justify-around mx-36 ">
-          <Image
-            src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
-            alt={product.product_name}
-            width={300}
-            height={400}
-            className="object-cover"
-          />
-          <div className='flex flex-col'>
-            <h1 className={`${interB.className} text-4xl mt-4 text-[#0F4A99]`}>{product.product_name}</h1>
-            <Rating name="read-only" value={4.5} precision={0.5} size="small" readOnly className='mt-2'/>
+      <div className="flex flex-row items-center justify-around mx-36">
+        <Image
+          src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
+          alt={product.product_name}
+          width={300}
+          height={400}
+          className="object-cover"
+        />
+        <div className='flex flex-col'>
+          <h1 className={`${interB.className} text-4xl mt-4 text-[#0F4A99]`}>{product.product_name}</h1>
+          <Rating name="read-only" value={4.5} precision={0.5} size="small" readOnly className='mt-2'/>
           <p className={`${interSB.className} text-3xl mt-4`}>{formatPrice(product.price)}</p>
           <div className="flex flex-row space-x-4 mt-4">
             <button className="border-[1px] px-8 py-3 rounded-md border-[#0F4A99] text-[#0F4A99] mx-auto lg:mx-0 flex flex-row space-x-2 items-center justify-center w-64">
-                <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
-                <span>Add to wishlist</span>
+              <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
+              <span>Add to wishlist</span>
             </button>
-            <button className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] mx-auto lg:mx-0 flex-row flex space-x-2 text-white items-center justify-center w-64">
-                <Icon icon="ion:cart-outline" width={28} height={28}/>
-                <span>Add to cart</span>
-              </button>
+            <button onClick={handleAddToCart} className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] mx-auto lg:mx-0 flex-row flex space-x-2 text-white items-center justify-center w-64">
+              <Icon icon="ion:cart-outline" width={28} height={28}/>
+              <span>Add to cart</span>
+            </button>
           </div>
-            <p className="mt-4">{product.description}</p>
+          <div className="flex flex-row items-center mt-4">
+            <button onClick={decreaseQuantity} disabled={quantity <= 1} className="px-4 py-2 border rounded-l-md bg-gray-200">
+              -
+            </button>
+            <span className="px-4 py-2 border-t border-b">{quantity}</span>
+            <button onClick={increaseQuantity} disabled={quantity >= product.stock_quantity} className="px-4 py-2 border rounded-r-md bg-gray-200">
+              +
+            </button>
           </div>
+          <p className="mt-4">Available Stock: {product.stock_quantity}</p>
+          <p className="mt-4">{product.description}</p>
         </div>
+      </div>
     </>
   );
 }

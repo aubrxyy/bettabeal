@@ -74,7 +74,7 @@ function CatalogContent() {
   };
 
   useEffect(() => {
-    fetch('https://api.bettabeal.my.id/api/categories')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -86,7 +86,7 @@ function CatalogContent() {
   }, []);
 
   useEffect(() => {
-    fetch('https://api.bettabeal.my.id/api/products?per_page=1000')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?per_page=1000`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -99,7 +99,7 @@ function CatalogContent() {
 
   useEffect(() => {
     setFade(true);
-    fetch(`https://api.bettabeal.my.id/api/products?page=${currentPage}&per_page=12`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?page=${currentPage}&per_page=12`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {

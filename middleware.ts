@@ -2,10 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const currentUser = request.cookies.get('currentUser')?.value;
-  const userRole = request.cookies.get('userRole')?.value;
-  console.log('Current User:', currentUser);
-  console.log('User Role:', userRole);
+  const USR = request.cookies.get('USR')?.value;
+  console.log('Current User:', USR);
   console.log('Request Path:', request.nextUrl.pathname);
 
   const publicPaths = ['/', '/login', '/register', '/public', '/framebg.jpg', '/logoBB.png'];
@@ -15,15 +13,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (currentUser && userRole === 'seller' && request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  if (currentUser && userRole === 'customer' && request.nextUrl.pathname === '/') {
-    return NextResponse.next();
-  }
-
-  if (!currentUser && !isPublicPath) {
+  if (!USR && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

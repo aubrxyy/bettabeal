@@ -32,7 +32,7 @@ export function Footer() {
             </div>
           </div>
           <div className="w-full lg:w-1/2 sm:ml-40">
-            <p className={`${inter.className} mt-8 lg:mt-0`}>Servis</p>
+            <p className={`${inter.className} mt-8 lg:mt-0`}>Service</p>
             <ul className="mt-4">
               <li className="mt-4 text-sm text-gray-400 hover:text-white hover:underline underline-offset-4 transition-all">
                 <a href="/">Informasi Ikan</a>

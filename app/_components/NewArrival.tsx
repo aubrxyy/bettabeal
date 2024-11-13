@@ -41,7 +41,7 @@ export function NewArrival() {
 
   useEffect(() => {
     setFade(true);
-    fetch('https://api.bettabeal.my.id/api/products?per_page=12')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?per_page=12`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
@@ -70,14 +70,14 @@ export function NewArrival() {
   };
 
   return (
-    <div className='max-sm:mx-4 sm:mx-8 md:mx-12 lg:mx-36 flex justify-center flex-col'>
+    <div className='max-sm:px-4 sm:px-8 md:px-12 lg:px-36 flex justify-center flex-col bg-gradient-to-b from-[#38B6FF] to-white'>
         <div className='mt-16'>
-          <h4 className={`${poppinsB.className} text-4xl text-[#0F4A99] flex flex-row text-nowrap`}>
-            <div className='h-[0.125rem] w-8 bg-gray-300 mr-4 my-auto'></div> Latest products <div className='h-[0.125rem] w-full bg-gray-300 ml-4 my-auto'></div>
+          <h4 className={`${poppinsB.className} text-4xl text-white flex flex-row text-nowrap`}>
+            <div className='h-[0.125rem] w-8 bg-gray-300 mr-4 my-auto'></div> New Arrivals <div className='h-[0.125rem] w-full bg-gray-300 ml-4 my-auto'></div>
           </h4>
             <div className='flex flex-wrap mt-12 justify-center gap-8'>
             {products.map(product => (
-              <div key={product.product_id} className='relative bg-gray-200 w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
+              <div key={product.product_id} className='relative bg-white w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
                 
                 <Image src={product.main_image ? product.main_image.image_url : '/placeholder.png'} alt={product.product_name} width={135} height={200} className='mx-auto mb-2 mt-6 w-40 h-48'/>
                 {isNewProduct(product.created_at) && (
@@ -91,7 +91,7 @@ export function NewArrival() {
                 </h2>
                 <div className="flex items-center ml-4 my-1">
                   <Icon icon="ic:baseline-star" className='text-yellow-500'/>
-                  <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.5</span>
+                  <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.9</span>
                 </div>
                 <p className={`${interSB.className} ml-4 text-md text-[#0F4A99]`}>
                     {formatPrice(product.price)} / ekor
