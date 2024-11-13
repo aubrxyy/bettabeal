@@ -66,7 +66,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (id) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`)
+      fetch(`${process.env.API_URL}/api/products/${id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Product not found');
@@ -90,7 +90,7 @@ export default function ProductDetail() {
   useEffect(() => {
     const token = Cookies.get('USR');
     if (token) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
+      fetch(`${process.env.API_URL}/api/cart`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export default function ProductDetail() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart/add`, {
+    fetch(`${process.env.API_URL}/api/cart/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

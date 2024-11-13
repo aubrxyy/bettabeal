@@ -41,7 +41,7 @@ export function NewArrival() {
 
   useEffect(() => {
     setFade(true);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?per_page=12`)
+    fetch(`${process.env.API_URL}/api/products?per_page=12`)
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {

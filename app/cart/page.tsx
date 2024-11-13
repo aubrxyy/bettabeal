@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
 import BreadcrumbsComponent from '@/app/_components/Breadcrumbs';
-import { Icon } from '@iconify/react';
-import Cookies from 'js-cookie';
-import { redirect } from 'next/navigation';
 import { showToast } from '@/app/toastManager';
+import Cookies from 'js-cookie';
+import { Inter } from 'next/font/google';
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const interB = Inter({
   subsets: ['latin'],
@@ -76,7 +75,7 @@ export default function CartPage() {
           setCart(data.data);
           // Fetch product details for each cart item
           data.data.items.forEach((item: CartItem) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${item.product.product_id}`, {
+            fetch(`${process.env.API_URL}/api/products/${item.product.product_id}`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +157,7 @@ export default function CartPage() {
     const cartItem = cart?.items.find(item => item.cart_item_id === cartItemId);
     if (!cartItem || cartItem.quantity <= 1) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_CART_DECREMENT_URL}/${cartItemId}`, {
+    fetch(`${process.env.API_CART_DECREMENT_URL}/${cartItemId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -192,7 +191,7 @@ export default function CartPage() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_CART_ITEMS_URL}/${cartItemId}`, {
+    fetch(`${process.env.API_CART_ITEMS_URL}/${cartItemId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -235,7 +234,7 @@ export default function CartPage() {
     const product = products[cartItem?.product.product_id || 0];
     if (!cartItem || newQuantity < 1 || newQuantity > product.stock_quantity) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_CART_UPDATE_URL}`, {
+    fetch(`${process.env.API_CART_UPDATE_URL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

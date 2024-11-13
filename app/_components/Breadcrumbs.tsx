@@ -13,7 +13,7 @@ export default function BreadcrumbsComponent() {
   useEffect(() => {
     const fetchProductDetails = async (id: string) => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/${id}`);
+        const response = await fetch(`${process.env.API_URL}/api/products/${id}`);
         const data = await response.json();
         if (data.status === 'success') {
           setProductName(data.data.product_name);
