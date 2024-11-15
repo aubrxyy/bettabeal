@@ -7,10 +7,6 @@ import { useRouter } from 'next/navigation';
 import Header from './Header';
 import Navbar from './Navbar';
 
-interface Seller {
-  email: string;
-}
-
 const interB = Inter({
   subsets: ['latin'],
   weight: '600',

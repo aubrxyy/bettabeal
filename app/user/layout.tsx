@@ -4,6 +4,8 @@ import { Poppins } from 'next/font/google';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCookie, setCookie } from '../_utils/cookies';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface User {
   fullName: string;
@@ -29,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = getCookie('USR');
     if (token) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/Linkpi/Linkuthentication`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           if (data.code === '000') {
             const uid = getCookie('UID');
             if (uid) {
-              fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customers/${uid}`)
+              fetch(`${process.env.NEXT_PUBLIC_API_URL}/Linkpi/customers/${uid}`)
                 .then(response => response.json())
                 .then(data => {
                   if (data.code === '000') {
@@ -102,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="h-1/5 bg-white rounded-t-xl my-auto text-[#38B6FF] relative flex flex-row items-center justify-start shadow-xl">
           <div className="rounded-full bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] w-16 h-16 flex items-center justify-center text-2xl ml-8 text-white">
           {user?.profilePicture ? (
-            <img src={user.profilePicture} alt="Profile" className="rounded-full w-full h-full object-cover" />
+            <Image src={user.profilePicture} width={100} height={100} alt="Profile" className="rounded-full w-full h-full object-cover" />
           ) : (
             user && getInitials(user.fullName)
           )}
@@ -117,57 +119,57 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <ul className='flex flex-col'>
                 <li>
                   <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
-                    <a
+                    <Link
                       href="/user"
                       className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname === '/user' ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
                     <Icon icon="ant-design:idcard-outlined" className='mr-4 size-5' />
                       Profile
-                    </a>
+                    </Link>
                   </div>
                 </li>
                 <li>
                   <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
-                    <a
+                    <Link
                       href="/user/orders"
                       className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname === '/user/orders' ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
                       <Icon icon="ph:package-duotone" className='mr-4 size-5' />
                       My Orders
-                    </a>
+                    </Link>
                   </div>
                 </li>
                 <li>
                   <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
-                    <a
-                      href="/user/address"
-                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname.startsWith('/user/address') ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
+                    <Link
+                      href="/user/Linkddress"
+                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname.startsWith('/user/Linkddress') ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
                       <Icon icon="solar:home-linear" className='mr-4 size-5' />
                       My Address
-                    </a>
+                    </Link>
                   </div>
                 </li>
                 <li>
                  <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
-                    <a
+                    <Link
                       href="/user/chat"
                       className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname === '/user/chat' ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
                       <Icon icon="bxs:chat" className='mr-4 size-5' />
                       Chat
-                    </a>
+                    </Link>
                  </div>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/logout"
                     onClick={handleLogoutClick}
                     className={`border-t-2 absolute bottom-0 items-center flex flex-row py-4 pl-8 pr-16 hover:bg-gray-100 rounded-bl-xl transition-all text-red-500`}
                   >
                     <Icon icon="gg:log-out" className='mr-4 size-5' />
                     Sign out
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>

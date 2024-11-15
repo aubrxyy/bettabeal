@@ -23,7 +23,6 @@ interface Area {
 export default function EditAddress() {
   const [address, setAddress] = useState<Address | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [postcodeError, setPostcodeError] = useState<string | null>(null);
   const [areas, setAreas] = useState<Area[]>([]);
   const [areaInput, setAreaInput] = useState('');
   const router = useRouter();
@@ -118,12 +117,7 @@ export default function EditAddress() {
       if (!response.ok) {
         const text = await response.text();
         const errorData = JSON.parse(text);
-        if (errorData.errors && errorData.errors.poscode_id) {
-          setPostcodeError(errorData.errors.poscode_id[0]);
-        } else {
-          setError(`Error: ${response.status} - ${text}`);
-        }
-        return;
+        setError(`Error: ${response.status} - ${errorData.message}`);
       }
 
       router.push('/user/address');

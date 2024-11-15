@@ -131,9 +131,9 @@ export function Header() {
               </div>
               <div className="flex flex-1 items-center justify-center xl:items-stretch xl:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <a href="/">
+                  <Link href="/">
                     <Image src="/logoBB.jpg" alt="Logo" width={150} height={500} className="ml-12 my-4" />
-                  </a>
+                  </Link>
                 </div>
                 <div className="hidden lg:ml-auto mr-8 xl:block my-auto">
                   <div className="flex space-x-12">

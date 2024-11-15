@@ -40,11 +40,6 @@ const poppinsB = Poppins({
   weight: '700',
 });
 
-const interB = Inter({
-  subsets: ['latin'],
-  weight: '700',
-});
-
 const interSB = Inter({
   subsets: ['latin'],
   weight: '600',

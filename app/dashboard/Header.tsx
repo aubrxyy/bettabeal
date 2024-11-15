@@ -9,14 +9,12 @@ import { getCookie, setCookie } from '../_utils/cookies';
 export default function Header() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
     const uid = getCookie('UID');
 
     if (uid) {
-      setUserId(uid);
       fetchUserInformation(uid);
     } else {
       router.push('/error');

@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,31 +18,31 @@ export function Footer() {
               Temukan keindahan dan keunikan ikan cupang terbaik di sini. Kami menghadirkan koleksi ikan cupang berkualitas dengan variasi warna memukau dan karakter yang kuat. Dari penggemar pemula hingga kolektor berpengalaman, BettaBeal adalah tempat yang tepat untuk mempercantik akuarium Anda.
             </p>
             <div className="flex flex-row mt-12 space-x-8">
-              <a href="/">
+              <Link href="/">
                 <Image src="/X-Logo.png" alt="Twitter" width={20} height={20} />
-              </a>
-              <a href="/">
+              </Link>
+              <Link href="/">
                 <Image src="/fb-logo.png" alt="Facebook" width={20} height={20} />
-              </a>
-              <a href="/">
+              </Link>
+              <Link href="/">
                 <Image src="/ig-logo.png" alt="Instagram" width={20} height={20} />
-              </a>
-              <a href="/">
+              </Link>
+              <Link href="/">
                 <Image src="/wa-logo.png" alt="WhatsApp" width={20} height={20} />
-              </a>
+              </Link>
             </div>
           </div>
           <div className="w-full lg:w-1/2 sm:ml-40">
             <p className={`${inter.className} mt-8 lg:mt-0`}>Service</p>
             <ul className="mt-4">
               <li className="mt-4 text-sm text-gray-400 hover:text-white hover:underline underline-offset-4 transition-all">
-                <a href="/">Informasi Ikan</a>
+                <Link href="/">Informasi Ikan</Link>
               </li>
               <li className="mt-4 text-sm text-gray-400 hover:text-white hover:underline underline-offset-4 transition-all">
-                <a href="/">Artikel Ikan</a>
+                <Link href="/">Artikel Ikan</Link>
               </li>
               <li className="mt-4 text-sm text-gray-400 hover:text-white hover:underline underline-offset-4 transition-all">
-                <a href="/">Pembayaran</a>
+                <Link href="/">Pembayaran</Link>
               </li>
             </ul>
           </div>
