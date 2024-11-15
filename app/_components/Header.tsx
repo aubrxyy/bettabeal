@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Inter } from 'next/font/google';
 import { Icon } from '@iconify/react';
+import Cookies from 'js-cookie';
 
 const interM = Inter({
   subsets: ['latin'],
@@ -24,9 +25,9 @@ const navigation = [
   { name: "Catalog", href: "/catalog" },
   { name: "Article", href: "/article" },
   { name: "Discuss", href: "/discuss" },
-  { name: "Favorites", href: "/favorites" },
+  { name: "Wishlist", href: "/wishlist" },
   { name: "Cart", href: "/cart" },
-  { name: "Profile", href: "/profile" }
+  { name: "User", href: "/user" }
 ];
 
 export function Header() {
@@ -35,6 +36,8 @@ export function Header() {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const controlHeader = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -57,6 +60,21 @@ export function Header() {
     }
   }, [controlHeader]);
 
+  useEffect(() => {
+    const UID = Cookies.get('UID');
+    if (UID) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customers/${UID}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.code === '000') {
+            setProfileImage(data.customer.profile_image);
+            setUserName(data.customer.full_name);
+          }
+        })
+        .catch(error => console.error('Error fetching user profile:', error));
+    }
+  }, []);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -64,6 +82,33 @@ export function Header() {
   const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       router.push(`/catalog?search=${searchTerm}`);
+    }
+  };
+
+  const renderProfileItem = () => {
+    if (profileImage) {
+      return (
+        <Link href="/user" className="relative flex items-center">
+          <Image src={profileImage} alt="Profile" width={32} height={32} className="rounded-full" />
+        </Link>
+      );
+    } else if (userName) {
+      const firstLetter = userName.charAt(0).toUpperCase();
+      return (
+        <Link href="/user" className="relative flex items-center">
+          <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-full text-white">
+            {firstLetter}
+          </div>
+        </Link>
+      );
+    } else {
+      return (
+        <Link href="/login" className="relative flex items-center">
+          <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
+            <Icon icon="carbon:user" width={28} height={28}/>
+          </div>
+        </Link>
+      );
     }
   };
 
@@ -105,7 +150,7 @@ export function Header() {
                     </div>
                     {navigation.map((item) => {
                       const isActive = pathname.endsWith(item.href);
-                      if (item.name === "Favorites") {
+                      if (item.name === "Wishlist") {
                         return (
                           <Link key={item.name} href={item.href} className="relative flex items-center">
                             <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
@@ -123,13 +168,11 @@ export function Header() {
                           </Link>
                         );
                       }
-                      if (item.name === "Profile") {
+                      if (item.name === "User") {
                         return (
-                          <Link key={item.name} href={item.href} className="relative flex items-center">
-                            <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
-                              <Icon icon="carbon:user" width={28} height={28}/>
-                            </div>
-                          </Link>
+                          <div key={item.name} className="relative flex items-center">
+                            {renderProfileItem()}
+                          </div>
                         );
                       }
                       return (

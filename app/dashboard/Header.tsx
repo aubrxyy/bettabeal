@@ -13,39 +13,36 @@ export default function Header() {
   const [username, setUsername] = useState<string | null>(null);
 
   useEffect(() => {
-    const currentUser = getCookie('currentUser');
-    const userRole = getCookie('userRole');
-    const userId = getCookie('userId');
-    const username = getCookie('username');
+    const uid = getCookie('UID');
 
-    if (!currentUser || userRole === 'customer' || !userRole) {
-      router.push('/error');
-      return;
-    }
-
-    if (userRole === 'seller') {
-      setIsAuthorized(true);
-      setUserId(userId);
-      setUsername(username);
+    if (uid) {
+      setUserId(uid);
+      fetchUserInformation(uid);
     } else {
       router.push('/error');
     }
   }, [router]);
 
-  useEffect(() => {
-    if (userId) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${userId}`)
-        .then(response => response.json())
-        .catch(error => console.error('Error fetching user data:', error));
+  const fetchUserInformation = async (uid: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${uid}`);
+      const data = await response.json();
+      if (data.code === '000') {
+        setIsAuthorized(true);
+        setUsername(data.user.username);
+      } else {
+        router.push('/error');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      router.push('/error');
     }
-  }, [userId]);
+  };
 
   const handleLogout = () => {
     const exp = new Date(0);
-    setCookie('currentUser', '', { expires: exp, secure: true, sameSite: 'Strict' });
-    setCookie('userRole', '', { expires: exp, secure: true, sameSite: 'Strict' });
-    setCookie('userId', '', { expires: exp, secure: true, sameSite: 'Strict' });
-    setCookie('username', '', { expires: exp, secure: true, sameSite: 'Strict' });
+    setCookie('USR', '', { expires: exp, secure: true, sameSite: 'Strict' });
+    setCookie('UID', '', { expires: exp, secure: true, sameSite: 'Strict' });
     localStorage.removeItem('token');
     router.push('/login');
   };

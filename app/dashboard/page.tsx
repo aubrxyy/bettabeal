@@ -3,6 +3,7 @@
 import { Inter } from 'next/font/google';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../_utils/cookies';
+import { useRouter } from 'next/navigation';
 import Header from './Header';
 import Navbar from './Navbar';
 
@@ -16,29 +17,45 @@ const interB = Inter({
 })
 
 export default function Dashboard() {
-  const [, setUserData] = useState<Seller | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const id = getCookie('userId');
-    setUserId(id);
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${userId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
+    const token = getCookie('USR');
+    if (token) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
         .then(data => {
-          setUserData(data.seller);
+          if (data.code === '000' && data.role === 'seller') {
+            setIsAuthenticated(true);
+          } else if (data.code === '403') {
+            router.push('/error');
+          } else {
+            setIsAuthenticated(false);
+          }
         })
-        .catch(error => console.error('Error fetching user data:', error));
+        .catch(error => {
+          console.error('Error during authentication:', error);
+          setIsAuthenticated(false);
+        });
+    } else {
+      router.push('/login');
     }
-  }, [userId]);
+  }, [router]);
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>;
+  }
+
+  if (isAuthenticated === false) {
+    return null;
+  }
 
   return (
     <div className="flex">
@@ -62,13 +79,6 @@ export default function Dashboard() {
             <div className='h-96 bg-white rounded-md col-span-5'></div>
             <div className='h-96 bg-white rounded-md col-span-2'></div>
           </div>
-          
-          {/* Dashboard */}
-          {/* {userData && (
-            <span className="ml-4 text-gray-700">
-              {userData.email}
-            </span>
-          )} */}
         </div>
       </div>
     </div>

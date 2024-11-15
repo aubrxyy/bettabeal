@@ -1,20 +1,36 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import { Header } from "./_components/Header";
-import { Footer } from "./_components/Footer";
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { Header } from './_components/Header';
+import { Footer } from './_components/Footer';
 
 const noHeaderFooterPaths = ['/login', '/register', '/dashboard'];
+const noFooterPaths = ['/user'];
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const showHeaderFooter = !noHeaderFooterPaths.includes(pathname);
+  const [showHeader, setShowHeader] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      const noHeaderFooter = noHeaderFooterPaths.some(noPath => url.startsWith(noPath));
+      setShowHeader(!noHeaderFooter);
+
+      const noFooter = noFooterPaths.some(noPath => url.startsWith(noPath));
+      setShowFooter(!noHeaderFooter && !noFooter);
+    };
+
+    // Initial check
+    handleRouteChange(pathname);
+  }, [pathname]);
 
   return (
-    <>
-      {showHeaderFooter && <Header />}
-      {children}
-      {showHeaderFooter && <Footer />}
-    </>
+    <div>
+      {showHeader && <Header />}
+      <main>{children}</main>
+      {showFooter && <Footer />}
+    </div>
   );
 }

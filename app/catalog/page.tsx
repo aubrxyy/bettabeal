@@ -226,44 +226,50 @@ function CatalogContent() {
               Available Products: <span className='text-[#0F4A99] text-lg'>{filteredProducts.length}</span>
             </h2>
             <div className={`transition-opacity duration-500 ${fade ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                {paginatedProducts.map(product => (
-                  <Link key={product.product_id} href={`/catalog/${product.product_id}`} className="bg-gray-200 lg:w-60 xl:w-64 min-h-96 h-fit pb-6 rounded-2xl cursor-pointer">
-                    <Image
-                      src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
-                      alt={product.product_name}
-                      width={200}
-                      height={200}
-                      className="mx-auto mb-2 mt-6 w-48 h-60 object-cover shadow-md"
-                    />
-                    <div className='flex flex-row mx-4 items-end'>
-                      <h1 className={`${poppinsB.className} mt-2 text-md break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {product.product_name}
-                      </h1>
-                        {isNewProduct(product.created_at) ? (
-                          <span className={`${poppinsB.className} ml-2 bg-gradient-to-b from-[#CF1669] to-[#FF3A44] text-white text-xs px-2 rounded-lg h-6 flex items-center`}>NEW</span>
-                        ) : (
-                          <span className="ml-2 text-xs px-2 rounded-lg h-6 flex items-center invisible">NEW</span>
-                        )}
-                    </div>
-                    <h2 className={`${interSB.className} mx-4 text-sm text-gray-500 break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {product.category.category_name}
-                    </h2>
-                <div className="flex items-center ml-4 my-1">
-                  <Icon icon="ic:baseline-star" className='text-yellow-500'/>
-                  <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.5</span>
-                  <p className={`${interSB.className} ml-2 text-md text-[#0F4A99]`}>
-                    | {formatPrice(product.price)}
-                  </p>
+              {filteredProducts.length === 0 ? (
+                <div className="flex justify-center mx-16 md:mx-48 lg:mx-64 xl:mx-72 items-center h-full text-nowrap">
+                  <p className="text-lg text-gray-500">No products for this category.</p>
                 </div>
-                  <button
-                    className={`${interSB.className} mt-3 text-nowrap text-white bg-[#0F4A99] flex rounded-lg w-[90%] sm:w-52 md:w-40 lg:w-44 xl:w-52 justify-center py-2 text-sm mx-auto transition-all hover:bg-[#0a356e]`}
-                  >
-                    Buy now
-                  </button>
-                  </Link>
-                ))}
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                  {paginatedProducts.map(product => (
+                    <Link key={product.product_id} href={`/catalog/${product.product_id}`} className="bg-gray-200 lg:w-60 xl:w-64 min-h-96 h-fit pb-6 rounded-2xl cursor-pointer">
+                      <Image
+                        src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
+                        alt={product.product_name}
+                        width={200}
+                        height={200}
+                        className="mx-auto mb-2 mt-6 w-48 h-60 object-cover shadow-md"
+                      />
+                      <div className='flex flex-row mx-4 items-end'>
+                        <h1 className={`${poppinsB.className} mt-2 text-md break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {product.product_name}
+                        </h1>
+                          {isNewProduct(product.created_at) ? (
+                            <span className={`${poppinsB.className} ml-2 bg-gradient-to-b from-[#CF1669] to-[#FF3A44] text-white text-xs px-2 rounded-lg h-6 flex items-center`}>NEW</span>
+                          ) : (
+                            <span className="ml-2 text-xs px-2 rounded-lg h-6 flex items-center invisible">NEW</span>
+                          )}
+                      </div>
+                      <h2 className={`${interSB.className} mx-4 text-sm text-gray-500 break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {product.category.category_name}
+                      </h2>
+                  <div className="flex items-center ml-4 my-1">
+                    <Icon icon="ic:baseline-star" className='text-yellow-500'/>
+                    <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>4.5</span>
+                    <p className={`${interSB.className} ml-2 text-md text-[#0F4A99]`}>
+                      | {formatPrice(product.price)}
+                    </p>
+                  </div>
+                    <button
+                      className={`${interSB.className} mt-3 text-nowrap text-white bg-[#0F4A99] flex rounded-lg w-[90%] sm:w-52 md:w-40 lg:w-44 xl:w-52 justify-center py-2 text-sm mx-auto transition-all hover:bg-[#0a356e]`}
+                    >
+                      Buy now
+                    </button>
+                    </Link>
+                  ))}
+                </div>
+              )}
               {filteredProducts.length > 12 && (
                 <div className="flex justify-center mt-12">
                   <button

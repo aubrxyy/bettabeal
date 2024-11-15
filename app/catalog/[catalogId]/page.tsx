@@ -50,6 +50,11 @@ interface CartItem {
   total_price: number;
 }
 
+interface WishlistItem {
+  wishlist_id: number;
+  product: Product;
+}
+
 export default function ProductDetail() {
   const params = useParams();
   const router = useRouter();
@@ -58,6 +63,7 @@ export default function ProductDetail() {
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [cartQuantity, setCartQuantity] = useState<number | null>(null);
+  const [wishlistItem, setWishlistItem] = useState<WishlistItem | null>(null);
 
   const formatPrice = (price: string) => {
     const number = parseInt(price, 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -89,7 +95,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     const token = Cookies.get('USR');
-    if (token) {
+    if (token && product) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cart`, {
         method: 'GET',
         headers: {
@@ -99,8 +105,8 @@ export default function ProductDetail() {
       })
         .then(response => response.json())
         .then(data => {
-          if (data.status === 'success') {
-            const cartItem = data.data.items.find((item: CartItem) => item.product.product_id === product?.product_id);
+          if (data.status === 'success' && data.data && data.data.items) {
+            const cartItem = data.data.items.find((item: CartItem) => item.product.product_id === product.product_id);
             if (cartItem) {
               setCartQuantity(cartItem.quantity);
             }
@@ -108,6 +114,26 @@ export default function ProductDetail() {
         })
         .catch(error => {
           console.error('Error fetching cart:', error);
+        });
+
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/wishlist`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success' && data.data) {
+            const wishlistItem = data.data.find((item: WishlistItem) => item.product.product_id === product.product_id);
+            if (wishlistItem) {
+              setWishlistItem(wishlistItem);
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching wishlist:', error);
         });
     }
   }, [product]);
@@ -144,6 +170,71 @@ export default function ProductDetail() {
       .catch(error => {
         console.error('Error adding product to cart:', error);
         showToast('Failed to add product to cart', { type: 'error' });
+      });
+  };
+
+  const handleAddToWishlist = () => {
+    const token = Cookies.get('USR');
+    if (!token) {
+      showToast('Please log in to add items to the wishlist.', { type: 'error' });
+      router.push('/login');
+      return;
+    }
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/wishlist/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        product_id: product?.product_id,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          setWishlistItem(data.data);
+          showToast(`'${product?.product_name}' added to wishlist.`, { type: 'success' });
+        } else if (data.status === 'error' && data.message === 'Product already in wishlist') {
+          showToast('Product already in wishlist', { type: 'info' });
+        } else {
+          showToast('Failed to add product to wishlist', { type: 'error' });
+        }
+      })
+      .catch(error => {
+        console.error('Error adding product to wishlist:', error);
+        showToast('Failed to add product to wishlist', { type: 'error' });
+      });
+  };
+
+  const handleRemoveFromWishlist = () => {
+    const token = Cookies.get('USR');
+    if (!token) {
+      showToast('Please log in to remove items from the wishlist.', { type: 'error' });
+      router.push('/login');
+      return;
+    }
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/wishlist/${wishlistItem?.wishlist_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          setWishlistItem(null);
+          showToast(`'${product?.product_name}' removed from wishlist.`, { type: 'success' });
+        } else {
+          showToast('Failed to remove product from wishlist', { type: 'error' });
+        }
+      })
+      .catch(error => {
+        console.error('Error removing product from wishlist:', error);
+        showToast('Failed to remove product from wishlist', { type: 'error' });
       });
   };
 
@@ -185,10 +276,17 @@ export default function ProductDetail() {
           <Rating name="read-only" value={4.5} precision={0.5} size="small" readOnly className='mt-2'/>
           <p className={`${interSB.className} text-3xl mt-4`}>{formatPrice(product.price)}</p>
           <div className="flex flex-row space-x-4 mt-4">
-            <button className="border-[1px] px-8 py-3 rounded-md border-[#0F4A99] text-[#0F4A99] mx-auto lg:mx-0 flex flex-row space-x-2 items-center justify-center w-64">
-              <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
-              <span>Add to wishlist</span>
-            </button>
+            {wishlistItem ? (
+              <button onClick={handleRemoveFromWishlist} className="border-[1px] px-8 py-3 rounded-md border-[#0F4A99] text-[#0F4A99] mx-auto lg:mx-0 flex flex-row space-x-2 items-center justify-center w-64 text-nowrap">
+                <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
+                <span>Remove from wishlist</span>
+              </button>
+            ) : (
+              <button onClick={handleAddToWishlist} className="border-[1px] px-8 py-3 rounded-md border-[#0F4A99] text-[#0F4A99] mx-auto lg:mx-0 flex flex-row space-x-2 items-center justify-center w-64">
+                <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
+                <span>Add to wishlist</span>
+              </button>
+            )}
             <button onClick={handleAddToCart} className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] mx-auto lg:mx-0 flex-row flex space-x-2 text-white items-center justify-center w-64">
               <Icon icon="ion:cart-outline" width={28} height={28}/>
               <span>Add to cart</span>

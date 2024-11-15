@@ -5,7 +5,7 @@ import { showToast } from '@/app/toastManager';
 import Cookies from 'js-cookie';
 import { Inter } from 'next/font/google';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const interB = Inter({
@@ -50,6 +50,7 @@ export default function CartPage() {
   const [cart, setCart] = useState<CartData | null>(null);
   const [products, setProducts] = useState<{ [key: number]: Product }>({});
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const formatPrice = (price: number) => {
     const number = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -59,7 +60,8 @@ export default function CartPage() {
   useEffect(() => {
     const token = Cookies.get('USR');
     if (!token) {
-      redirect('/login');
+      router.push('/login');
+      return;
     }
 
     fetch(`${process.env.NEXT_PUBLIC_API_CART_URL}`, {
@@ -103,12 +105,12 @@ export default function CartPage() {
         console.error('Error fetching cart:', error);
         setError('Failed to fetch cart');
       });
-  }, []);
+  }, [router]);
 
   const handleAddToCart = (productId: number, quantity: number) => {
     const token = Cookies.get('USR');
     if (!token) {
-      setError('Please log in to add items to the cart.');
+      router.push('/login');
       return;
     }
 
@@ -131,7 +133,7 @@ export default function CartPage() {
             const updatedItems = prevCart.items.map(item =>
               item.product.product_id === productId ? { ...item, quantity: item.quantity + quantity, total_price: (item.quantity + quantity) * parseFloat(item.product.price) } : item
             );
-            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal + (quantity * parseFloat(products[productId].price)) };
+            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal + (quantity * parseFloat(products[productId].price)), total_items: prevCart.total_items + quantity };
           });
         } else {
           setError('Failed to add product to cart');
@@ -150,7 +152,7 @@ export default function CartPage() {
   const handleDecreaseQuantity = (cartItemId: number) => {
     const token = Cookies.get('USR');
     if (!token) {
-      setError('Please log in to modify your cart.');
+      router.push('/login');
       return;
     }
 
@@ -158,7 +160,7 @@ export default function CartPage() {
     if (!cartItem || cartItem.quantity <= 1) return;
 
     fetch(`${process.env.NEXT_PUBLIC_API_CART_DECREMENT_URL}/${cartItemId}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
@@ -172,7 +174,7 @@ export default function CartPage() {
             const updatedItems = prevCart.items.map(item =>
               item.cart_item_id === cartItemId ? { ...item, quantity: item.quantity - 1, total_price: (item.quantity - 1) * parseFloat(item.product.price) } : item
             );
-            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal - parseFloat(cartItem.product.price) };
+            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal - parseFloat(cartItem.product.price), total_items: prevCart.total_items - 1 };
           });
         } else {
           setError('Failed to update cart');
@@ -187,7 +189,7 @@ export default function CartPage() {
   const handleRemoveFromCart = (cartItemId: number) => {
     const token = Cookies.get('USR');
     if (!token) {
-      setError('Please log in to modify your cart.');
+      router.push('/login');
       return;
     }
 
@@ -205,8 +207,10 @@ export default function CartPage() {
           setCart(prevCart => {
             if (!prevCart) return prevCart;
             const updatedItems = prevCart.items.filter(item => item.cart_item_id !== cartItemId);
-            showToast(`'${removedItem?.product.name}' removed from cart.`, { type: 'success' });
-            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal - (removedItem ? removedItem.total_price : 0), total_items: prevCart.total_items - 1 };
+            setTimeout(() => {
+              showToast(`'${removedItem?.product.name}' removed from cart.`, { type: 'success' });
+            }, 0);
+            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal - (removedItem ? removedItem.total_price : 0), total_items: prevCart.total_items - (removedItem?.quantity || 0) };
           });
         } else {
           setError('Failed to remove item from cart');
@@ -226,7 +230,7 @@ export default function CartPage() {
   const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
     const token = Cookies.get('USR');
     if (!token) {
-      setError('Please log in to modify your cart.');
+      router.push('/login');
       return;
     }
 
@@ -253,7 +257,7 @@ export default function CartPage() {
             const updatedItems = prevCart.items.map(item =>
               item.cart_item_id === cartItemId ? { ...item, quantity: newQuantity, total_price: newQuantity * parseFloat(item.product.price) } : item
             );
-            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal + (newQuantity - cartItem.quantity) * parseFloat(cartItem.product.price) };
+            return { ...prevCart, items: updatedItems, subtotal: prevCart.subtotal + (newQuantity - cartItem.quantity) * parseFloat(cartItem.product.price), total_items: prevCart.total_items + (newQuantity - cartItem.quantity) };
           });
         } else {
           setError('Failed to update cart');
@@ -279,58 +283,65 @@ export default function CartPage() {
         <BreadcrumbsComponent />
       </div>
       <div className="mx-36">
-        <h1 className={`${interB.className} text-4xl mt-4 text-[#0F4A99]`}>My Cart</h1>
-        <p className="mt-2">Total Items: {cart.total_items}</p>
-        <p className="mt-2">Subtotal: {formatPrice(cart.subtotal)}</p>
-        <div className="flex flex-col gap-8 mt-8">
+        <h1 className={`${interB.className} text-4xl mt-4 mb-8 text-[#0F4A99]`}>Shopping Cart</h1>
+        <div className="flex flex-col gap-y-4 justify-center">
           {cart.items.map(item => {
             const product = products[item.product.product_id];
             return (
-              <div key={item.cart_item_id} className="flex flex-row items-center border p-4 rounded-lg">
+              <div key={item.cart_item_id} className="flex flex-row w-full items-center justify-between border-b-2 p-4">
                 {product && (
-                  <Image
-                    src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
-                    alt={product.product_name}
-                    width={100}
-                    height={100}
-                    className="object-cover"
-                  />
-                )}
-                <div className="flex flex-col ml-4">
-                  <h1 className={`${interB.className} text-xl text-[#0F4A99]`}>{item.product.name}</h1>
-                  <p className={`${interSB.className} text-lg mt-4`}>{formatPrice(parseFloat(item.product.price))}</p>
-                  <p className="mt-2">Available Stock: {product?.stock_quantity}</p>
-                  <div className="flex flex-row items-center mt-4">
-                    <button onClick={() => handleDecreaseQuantity(item.cart_item_id)} className="px-4 py-2 border rounded-l-md bg-gray-200">
-                      -
-                    </button>
-                    <input
-                      type="text"
-                      value={item.quantity}
-                      onChange={(e) => handleQuantityChange(item.cart_item_id, parseInt(e.target.value) || 0)}
-                      onKeyDown={(e) => {
-                        if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                          e.preventDefault();
-                        }
-                      }}
-                      className="px-4 py-2 border-t border-b text-center w-16 no-arrows outline-none"
+                    <Image
+                      src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
+                      alt={product.product_name}
+                      width={100}
+                      height={100}
+                      className="object-cover"
                     />
-                    <button onClick={() => handleIncreaseQuantity(item.product.product_id)} className="px-4 py-2 border rounded-r-md bg-gray-200">
-                      +
+                  )}
+                  <div className='flex flex-col justify-start ml-8'>
+                    <h1 className={`${interB.className} text-2xl text-[#0F4A99]`}>{item.product.name}</h1>
+                    <span className='text-gray-600 text-sm w-[15ch]'>Available stock: {product?.stock_quantity}</span>
+                  </div>
+                    <div className="flex flex-row items-center ml-16">
+                      <button onClick={() => handleDecreaseQuantity(item.cart_item_id)} className="px-2 py-1">
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        value={item.quantity}
+                        onChange={(e) => handleQuantityChange(item.cart_item_id, parseInt(e.target.value) || 0)}
+                        onKeyDown={(e) => {
+                          if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                            e.preventDefault();
+                          }
+                        }}
+                        className="py-1 border-t border rounded-md text-center w-16 outline-none"
+                      />
+                      <button onClick={() => handleIncreaseQuantity(item.product.product_id)} className="px-2 py-1">
+                        +
+                      </button>
+                    </div>
+                    <p className={`${interSB.className} text-lg ml-16`}>{formatPrice(parseFloat(item.product.price))}</p>
+                    <button onClick={() => handleRemoveFromCart(item.cart_item_id)} className="px-4 py-1 border rounded-md bg-red-600 text-white ml-16">
+                      &#10005;
                     </button>
                   </div>
-                  <p className="mt-2">Total Price: {formatPrice(item.total_price)}</p>
-                  <button onClick={() => handleRemoveFromCart(item.cart_item_id)} className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] text-white mt-4">
-                    Remove from cart
-                  </button>
-                </div>
-              </div>
             );
           })}
+        <div className={`my-auto p-4 shadow-md rounded-lg flex flex-col border-t-4 border-[#0F4A99] w-full`}>
+            <div className='justify-between flex flex-row'>
+              <p>Subtotal:</p>
+              <p className={`${interSB.className}`}>{formatPrice(cart.subtotal)}</p>
+            </div>
+            <div className='justify-between flex flex-row'>
+              <p>Total items:</p>
+              <p className={`${interSB.className}`}>{(cart.total_items)}</p>
+            </div>
+        </div>
         </div>
         <div className="flex justify-end mt-8">
           <button onClick={handleCheckout} className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] text-white">
-            Checkout
+            Proceed to checkout
           </button>
         </div>
       </div>

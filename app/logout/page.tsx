@@ -10,6 +10,7 @@ export default function Logout() {
   useEffect(() => {
     const exp = new Date(0);
     setCookie('USR', '', { expires: exp, secure: true, sameSite: 'Strict' });
+    setCookie('UID', '', { expires: exp, secure: true, sameSite: 'Strict' });
     localStorage.removeItem('token');
     router.push('/login');
   }, [router]);
