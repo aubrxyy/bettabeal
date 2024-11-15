@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = getCookie('USR');
     if (token) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/Linkpi/Linkuthentication`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           if (data.code === '000') {
             const uid = getCookie('UID');
             if (uid) {
-              fetch(`${process.env.NEXT_PUBLIC_API_URL}/Linkpi/customers/${uid}`)
+              fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/customers/${uid}`)
                 .then(response => response.json())
                 .then(data => {
                   if (data.code === '000') {
@@ -142,8 +142,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li>
                   <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
                     <Link
-                      href="/user/Linkddress"
-                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname.startsWith('/user/Linkddress') ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
+                      href="/user/address"
+                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname.startsWith('/user/address') ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
                       <Icon icon="solar:home-linear" className='mr-4 size-5' />
                       My Address

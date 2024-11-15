@@ -53,7 +53,10 @@ export default function EditAddress() {
 
         const data = await response.json();
         if (data.code === '000') {
-          setAddress(data.data);
+          setAddress({
+            ...data.data,
+            is_main: data.data.is_main === 1, // Ensure is_main is a boolean
+          });
           setAreaInput(data.data.biteship_id ? data.data.biteship_id : '');
         } else {
           setError(`Error: ${data.message}`);
@@ -127,8 +130,8 @@ export default function EditAddress() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setAddress((prevAddress) => prevAddress ? { ...prevAddress, [name]: value } : null);
+    const { name, value, type, checked } = e.target;
+    setAddress((prevAddress) => prevAddress ? { ...prevAddress, [name]: type === 'checkbox' ? checked : value } : null);
   };
 
   if (!address) {
@@ -200,7 +203,7 @@ export default function EditAddress() {
             type="checkbox"
             name="is_main"
             checked={address.is_main}
-            onChange={(e) => setAddress((prevAddress) => prevAddress ? { ...prevAddress, is_main: e.target.checked } : null)}
+            onChange={handleChange}
             className="mr-2 leading-tight"
           />
           <span className="text-gray-700">Set as main address</span>

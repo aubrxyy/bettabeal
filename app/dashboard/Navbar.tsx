@@ -2,6 +2,7 @@
 import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -18,58 +19,58 @@ const Navbar = () => {
           <nav className="flex-1 ">
             <ul className='flex flex-col'>
               <li>
-                <a
+                <Link
                   href="/dashboard"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/dashboard' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                 <Icon icon="line-md:home" className='mr-4 size-5' />
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/profile"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/profile' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="line-md:list" className='mr-4 size-5' />
                   Order
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/settings"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="tdesign:tag" className='mr-4 size-5' />
                   Product
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/settings"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="tabler:article" className='mr-4 size-5' />
                   Article
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/settings"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="bxs:chat" className='mr-4 size-5' />
                   Chat
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/settings"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="mingcute:settings-6-line" className='mr-4 size-5' />
                   Settings
-                </a>
+                </Link>
               </li>
               
             </ul>

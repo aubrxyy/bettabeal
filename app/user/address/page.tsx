@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
 import { toast, ToastContainer } from 'react-toastify';
@@ -13,10 +13,10 @@ interface Address {
   district_id: number;
   postcode_id: number | null;
   phone_number: string;
-  is_main: boolean;
+  is_main: number;
 }
 
-export default function ViewAddresses() {
+function AddressContent() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -152,7 +152,7 @@ export default function ViewAddresses() {
               <p className="font-semibold">Name: {address.name}</p>
               <p>Address: {address.address}</p>
               <p>Phone Number: {address.phone_number}</p>
-              {address.is_main === true && <p className="text-gray-500 italic">This is your default delivery address</p>}
+              {address.is_main === 1 && <p className="text-gray-500 italic">This is your default delivery address</p>}
             </div>
             <div className="flex space-x-2">
               <button
@@ -206,5 +206,13 @@ export default function ViewAddresses() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ViewAddresses() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AddressContent />
+    </Suspense>
   );
 }

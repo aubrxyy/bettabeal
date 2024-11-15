@@ -14,6 +14,22 @@ export default function Header() {
   useEffect(() => {
     const uid = getCookie('UID');
 
+    const fetchUserInformation = async (uid: string) => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${uid}`);
+        const data = await response.json();
+        if (data.code === '000') {
+          setIsAuthorized(true);
+          setUsername(data.user.username);
+        } else {
+          router.push('/error');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        router.push('/error');
+      }
+    };
+    
     if (uid) {
       fetchUserInformation(uid);
     } else {
@@ -21,21 +37,6 @@ export default function Header() {
     }
   }, [router]);
 
-  const fetchUserInformation = async (uid: string) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${uid}`);
-      const data = await response.json();
-      if (data.code === '000') {
-        setIsAuthorized(true);
-        setUsername(data.user.username);
-      } else {
-        router.push('/error');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      router.push('/error');
-    }
-  };
 
   const handleLogout = () => {
     const exp = new Date(0);
