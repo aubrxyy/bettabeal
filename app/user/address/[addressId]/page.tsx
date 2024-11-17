@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Address {
   address_id: number;
@@ -27,6 +28,8 @@ export default function EditAddress() {
   const [areaInput, setAreaInput] = useState('');
   const router = useRouter();
   const { addressId } = useParams();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -123,7 +126,7 @@ export default function EditAddress() {
         setError(`Error: ${response.status} - ${errorData.message}`);
       }
 
-      router.push('/user/address');
+      router.push(`/${redirect}?success=editSaved`);
     } catch (error) {
       setError(`Update error: ${(error as Error).message}`);
     }

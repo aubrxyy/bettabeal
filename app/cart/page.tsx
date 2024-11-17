@@ -5,6 +5,7 @@ import { showToast } from '@/app/toastManager';
 import Cookies from 'js-cookie';
 import { Inter } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -222,11 +223,6 @@ export default function CartPage() {
       });
   };
 
-  const handleCheckout = () => {
-    // Implement the logic for the checkout process
-    alert('Proceeding to checkout...');
-  };
-
   const handleQuantityChange = (cartItemId: number, newQuantity: number) => {
     const token = Cookies.get('USR');
     if (!token) {
@@ -282,26 +278,28 @@ export default function CartPage() {
       <div className='mt-8 mb-12 ml-24'>
         <BreadcrumbsComponent />
       </div>
-      <div className="mx-36">
+      <div className="mx-36 mb-12">
         <h1 className={`${interB.className} text-4xl mt-4 mb-8 text-[#0F4A99]`}>Shopping Cart</h1>
-        <div className="flex flex-col gap-y-4 justify-center">
-          {cart.items.map(item => {
-            const product = products[item.product.product_id];
-            return (
-              <div key={item.cart_item_id} className="flex flex-row w-full items-center justify-between border-b-2 p-4">
-                {product && (
-                    <Image
-                      src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
-                      alt={product.product_name}
-                      width={100}
-                      height={100}
-                      className="object-cover"
-                    />
-                  )}
-                  <div className='flex flex-col justify-start ml-8'>
-                    <h1 className={`${interB.className} text-2xl text-[#0F4A99]`}>{item.product.name}</h1>
-                    <span className='text-gray-600 text-sm w-[15ch]'>Available stock: {product?.stock_quantity}</span>
-                  </div>
+        {cart.items.length > 0 ? (
+          <>
+            <div className="flex flex-col gap-y-4 justify-center">
+              {cart.items.map(item => {
+                const product = products[item.product.product_id];
+                return (
+                  <div key={item.cart_item_id} className="flex flex-row w-full items-center justify-between border-b-2 p-4">
+                    {product && (
+                      <Image
+                        src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
+                        alt={product.product_name}
+                        width={100}
+                        height={100}
+                        className="object-cover"
+                      />
+                    )}
+                    <div className='flex flex-col justify-start ml-8'>
+                      <h1 className={`${interB.className} text-2xl text-[#0F4A99]`}>{item.product.name}</h1>
+                      <span className='text-gray-600 text-sm w-[15ch]'>Available stock: {product?.stock_quantity}</span>
+                    </div>
                     <div className="flex flex-row items-center ml-16">
                       <button onClick={() => handleDecreaseQuantity(item.cart_item_id)} className="px-2 py-1">
                         -
@@ -326,24 +324,30 @@ export default function CartPage() {
                       &#10005;
                     </button>
                   </div>
-            );
-          })}
-        <div className={`my-auto p-4 shadow-md rounded-lg flex flex-col border-t-4 border-[#0F4A99] w-full`}>
-            <div className='justify-between flex flex-row'>
-              <p>Subtotal:</p>
-              <p className={`${interSB.className}`}>{formatPrice(cart.subtotal)}</p>
+                );
+              })}
+              <div className={`my-auto p-4 shadow-md rounded-lg flex flex-col border-t-4 border-[#0F4A99] w-full`}>
+                <div className='justify-between flex flex-row'>
+                  <p>Subtotal:</p>
+                  <p className={`${interSB.className}`}>{formatPrice(cart.subtotal)}</p>
+                </div>
+                <div className='justify-between flex flex-row'>
+                  <p>Total items:</p>
+                  <p className={`${interSB.className}`}>{(cart.total_items)}</p>
+                </div>
+              </div>
             </div>
-            <div className='justify-between flex flex-row'>
-              <p>Total items:</p>
-              <p className={`${interSB.className}`}>{(cart.total_items)}</p>
+            <div className="flex justify-end mt-8">
+              <Link href="/cart/shipping">
+                <button className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] text-white">
+                  Proceed to checkout
+                </button>
+              </Link>
             </div>
-        </div>
-        </div>
-        <div className="flex justify-end mt-8">
-          <button onClick={handleCheckout} className="border-[1px] px-8 py-3 rounded-md bg-[#0F4A99] text-white">
-            Proceed to checkout
-          </button>
-        </div>
+          </>
+        ) : (
+          <div className="text-center text-gray-600 text-lg italic my-36">No items currently in cart</div>
+        )}
       </div>
     </>
   );

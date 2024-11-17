@@ -5,6 +5,7 @@ import Template from "./template";
 import ClientLayout from "./clientlayout";
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Script from 'next/script';
 
 const interR = Inter({
   subsets: ['latin'],
@@ -23,6 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://app.sandbox.midtrans.com/snap/snap.js"
+          data-client-key={process.env.MIDTRANS_CLIENT_KEY}
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className={`${interR.className} antialiased`}>
         <Template>
           <ClientLayout>

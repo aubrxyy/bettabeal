@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Poppins, Inter } from 'next/font/google';
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 interface Product {
   product_id: number;
@@ -77,7 +78,7 @@ export function NewArrival() {
           </h4>
             <div className='flex flex-wrap mt-12 justify-center gap-8'>
             {products.map(product => (
-              <div key={product.product_id} className='relative bg-white w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
+              <Link key={product.product_id} href={`/catalog/${product.product_id}`} className='relative bg-white w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
                 
                 <Image src={product.main_image ? product.main_image.image_url : '/placeholder.png'} alt={product.product_name} width={135} height={200} className='mx-auto mb-2 mt-6 w-40 h-48'/>
                 {isNewProduct(product.created_at) && (
@@ -99,7 +100,7 @@ export function NewArrival() {
                 <button className={`${interSB.className} text-nowrap text-white bg-[#0F4A99] my-3 flex rounded-lg px-12 py-[6px] text-sm mx-auto transition-all hover:bg-[#0a356e]`}>
                     Buy now
                 </button>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

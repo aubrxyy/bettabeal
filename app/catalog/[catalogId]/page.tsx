@@ -263,7 +263,7 @@ export default function ProductDetail() {
       <div className='mt-8 mb-12 ml-24'>
         <BreadcrumbsComponent />
       </div>
-      <div className="flex flex-row items-center justify-around mx-36">
+      <div className="flex flex-row items-center justify-between mb-24 gap-x-36 mx-36">
         <Image
           src={product.main_image ? product.main_image.image_url : '/placeholder.png'}
           alt={product.product_name}
@@ -302,9 +302,12 @@ export default function ProductDetail() {
             </button>
           </div>
           <p className="mt-4">Available Stock: {product.stock_quantity}</p>
-          <p className="mt-4">{product.description}</p>
         </div>
       </div>
+          <div className='mx-36 mb-24'>
+            <h1 className='font-bold text-2xl'>Description</h1>
+            <p className="mt-4">{product.description}</p>
+          </div>
     </>
   );
 }

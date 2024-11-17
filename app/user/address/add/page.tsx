@@ -82,15 +82,15 @@ export default function AddressDetails() {
     });
     const data = await response.json();
     if (data.code === '000') {
-      router.push('/user/address?success=true');
+      router.push('/user/address?success=addSaved');
     } else {
-      toast.error('Failed to add address. Please try again.');
+      toast.error('Failed to add address. Please fill the required fields');
     }
   };
 
   return (
     <div className="mx-auto p-6 bg-white rounded-xl">
-      <ToastContainer />
+      <ToastContainer closeOnClick hideProgressBar autoClose={2000} />
       <h1 className="text-xl font-bold mb-4">Add a new address</h1>
       <form onSubmit={handleSubmit} className='text-sm'>
         <div className="mb-2">
@@ -101,6 +101,7 @@ export default function AddressDetails() {
             onChange={(e) => setName(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            placeholder='Nama Penerima...'
           />
         </div>
         <div className="mb-2">
@@ -111,6 +112,7 @@ export default function AddressDetails() {
             onChange={(e) => setAddress(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            placeholder='Alamat lengkap...'
           />
         </div>
         <div className="mb-2">
@@ -163,7 +165,7 @@ export default function AddressDetails() {
               fetchAreas(e.target.value);
             }}
             placeholder="Search for an area"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required
           />
           {areas.length > 0 && (
             <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-48 overflow-y-auto">

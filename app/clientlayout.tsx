@@ -6,7 +6,7 @@ import { Header } from './_components/Header';
 import { Footer } from './_components/Footer';
 
 const noHeaderFooterPaths = ['/login', '/register', '/dashboard'];
-const noFooterPaths = ['/user'];
+const noFooterPaths = ['/user', '/cart/checkout'];
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

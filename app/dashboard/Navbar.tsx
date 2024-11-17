@@ -1,21 +1,14 @@
 'use client'
 import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import Link from 'next/link';
 
 const Navbar = () => {
   const pathname = usePathname();
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
 
   return (
     <div className="flex">
-      {isSidebarVisible && (
-        <div className="h-screen bg-white pr-4 text-[#38B6FF] pt-24 relative flex flex-col">
+        <div className="h-screen bg-white pr-2 text-[#38B6FF] pt-24 relative flex flex-col">
           <nav className="flex-1 ">
             <ul className='flex flex-col'>
               <li>
@@ -29,8 +22,8 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  href="/profile"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/profile' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/dashboard/orders"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith('/dashboard/orders') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="line-md:list" className='mr-4 size-5' />
                   Order
@@ -38,8 +31,8 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  href="/settings"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/dashboard/products"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith ('/dashboard/products') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="tdesign:tag" className='mr-4 size-5' />
                   Product
@@ -47,50 +40,35 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  href="/settings"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/dashboard/articles"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith('/dashboard/articles') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  <Icon icon="tabler:article" className='mr-4 size-5' />
+                  <Icon icon="line-md:text-box-multiple" className='mr-4 size-5' />
                   Article
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/settings"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/dashboard/chat"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith('/dashboard/chat') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  <Icon icon="bxs:chat" className='mr-4 size-5' />
+                  <Icon icon="line-md:chat" className='mr-4 size-5' />
                   Chat
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/settings"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname === '/settings' ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                  href="/dashboard/profile"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b text-nowrap hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith('/dashboard/profile') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
-                  <Icon icon="mingcute:settings-6-line" className='mr-4 size-5' />
-                  Settings
+                  <Icon icon="line-md:person" className='mr-4 size-5' />
+                  Profile settings
                 </Link>
               </li>
               
             </ul>
           </nav>
-          <button
-            onClick={toggleSidebar}
-            className="block py-4 pr-8 hover:bg-gray-700"
-          >
-            Hide Sidebar
-          </button>
-        </div>
-      )}
-      {!isSidebarVisible && (
-        <button
-          onClick={toggleSidebar}
-          className="p-2 bg-gray-600 hover:bg-gray-700 text-white rounded-full w-10 h-10 flex items-center justify-center fixed bottom-4 left-4"
-        >
-          →
-        </button>
-      )}
+      </div>
     </div>
   );
 };

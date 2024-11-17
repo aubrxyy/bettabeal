@@ -3,6 +3,7 @@
 import { Poppins } from 'next/font/google';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -57,7 +58,7 @@ export function ArticleHome() {
         </h4>
         <div className='flex flex-wrap mt-12 justify-center gap-5'>
           {articles.slice(0, 2).map(article => (
-            <a key={article.article_id} href={`/article/${article.article_id}`} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-[32rem] pb-20 rounded-xl'>
+            <Link key={article.article_id} href={`/article/${article.article_id}`} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-[32rem] pb-20 rounded-xl hover:opacity-80 transition-all'>
               <Image src={article.image ? `https://api.bettabeal.my.id${article.image}` : '/placeholder.png'} alt={article.title} width={700} height={500} className='w-full mx-auto h-72 object-cover rounded-tl-xl rounded-tr-xl'/>
               <h1 className={`${poppins.className} ml-4 mt-4 text-xl text-[#0F4A99] line-clamp-2`}>
                 {article.title}
@@ -65,7 +66,7 @@ export function ArticleHome() {
               <p className={`${poppinsR.className} mx-4 text-sm mt-2 text-gray-500 leading-6 text-justify line-clamp-5`}>
                 {article.content}
               </p>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

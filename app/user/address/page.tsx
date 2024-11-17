@@ -22,6 +22,8 @@ function AddressContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
+  const [showAddToast, setShowAddToast] = useState(false);
+  const [showEditToast, setShowEditToast] = useState(false);
   const addressesPerPage = 3;
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -71,10 +73,28 @@ function AddressContent() {
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('success') === 'true') {
-      toast.success('Successfully added address!');
+    if (searchParams.get('success') === 'editSaved') {
+      setShowEditToast(true);
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('success');
+      window.history.replaceState({}, '', newUrl.toString());
+    } else if (searchParams.get('success') === 'addSaved') {
+      setShowAddToast(true);
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('success');
+      window.history.replaceState({}, '', newUrl.toString());
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (showEditToast) {
+      toast.success('Changes saved successfully!');
+      setShowEditToast(false);
+    } else if (showAddToast) {
+      toast.success('Address added successfully!');
+      setShowAddToast(false);
+    }
+  }, [showEditToast, showAddToast]);
 
   const handleEdit = (addressId: number) => {
     router.push(`/user/address/${addressId}`);
@@ -103,9 +123,19 @@ function AddressContent() {
       }
 
       // Remove the deleted address from the state
-      setAddresses(addresses.filter((address) => address.address_id !== addressToDelete));
+      const updatedAddresses = addresses.filter((address) => address.address_id !== addressToDelete);
+      setAddresses(updatedAddresses);
       setShowDeleteDialog(false);
       setAddressToDelete(null);
+      toast.success('Address deleted successfully!');
+
+      // Check if the current page is empty after deletion
+      const indexOfLastAddress = currentPage * addressesPerPage;
+      const indexOfFirstAddress = indexOfLastAddress - addressesPerPage;
+      const currentAddresses = updatedAddresses.slice(indexOfFirstAddress, indexOfLastAddress);
+      if (currentAddresses.length === 0 && currentPage > 1) {
+        setCurrentPage(1);
+      }
     } catch (error) {
       setError(`Delete error: ${(error as Error).message}`);
     }
@@ -134,7 +164,7 @@ function AddressContent() {
 
   return (
     <div className="container mx-auto p-4">
-      <ToastContainer position='bottom-right' closeOnClick />
+      <ToastContainer position='bottom-right' closeOnClick hideProgressBar />
       <h1 className="text-2xl font-bold mb-4">Saved Addresses</h1>
       <button
         onClick={handleAddAddress}

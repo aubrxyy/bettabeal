@@ -23,8 +23,7 @@ const interR = Inter({
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Catalog", href: "/catalog" },
-  { name: "Article", href: "/article" },
-  { name: "Discuss", href: "/discuss" },
+  { name: "Article", href: "/articles" },
   { name: "Wishlist", href: "/wishlist" },
   { name: "Cart", href: "/cart" },
   { name: "User", href: "/user" }
@@ -67,7 +66,7 @@ export function Header() {
         .then(response => response.json())
         .then(data => {
           if (data.code === '000') {
-            setProfileImage(data.customer.profile_image);
+            setProfileImage(`${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`);
             setUserName(data.customer.full_name);
           }
         })
@@ -89,7 +88,7 @@ export function Header() {
     if (profileImage) {
       return (
         <Link href="/user" className="relative flex items-center">
-          <Image src={profileImage} alt="Profile" width={32} height={32} className="rounded-full" />
+          <Image src={profileImage} alt="Profile" width={32} height={32} className="rounded-full object-fill size-7" />
         </Link>
       );
     } else if (userName) {
@@ -153,17 +152,21 @@ export function Header() {
                       if (item.name === "Wishlist") {
                         return (
                           <Link key={item.name} href={item.href} className="relative flex items-center">
-                            <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
-                              <Icon icon="material-symbols-light:favorite-outline" width={28} height={28}/>
-                            </div>
-                          </Link>
+                          <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
+                            <Icon
+                              icon={pathname.startsWith('/wishlist') ? 'material-symbols-light:favorite' : 'material-symbols-light:favorite-outline'}
+                              width={28}
+                              height={28}
+                            />
+                          </div>
+                        </Link>
                         );
                       }
                       if (item.name === "Cart") {
                         return (
                           <Link key={item.name} href={item.href} className="relative flex items-center">
                             <div className="flex items-center justify-center w-8 h-8 bg-dgreen rounded-full text-blue-800">
-                              <Icon icon="ion:cart-outline" width={28} height={28}/>
+                              <Icon icon={pathname.startsWith('/cart') ? "ion-cart" : "ion:cart-outline" } width={28} height={28}/>
                             </div>
                           </Link>
                         );

@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   if (data.code === '000') {
                     setUser({
                       fullName: data.customer.full_name,
-                      profilePicture: data.customer.profile_image,
+                      profilePicture: `https://api.bettabeal.my.id${data.customer.profile_image}`,
                     });
                   } else {
                     console.error('Failed to fetch user data');
