@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 interface Biodata {
   full_name: string;
@@ -86,7 +87,7 @@ export default function Profile() {
             <div className="flex items-center mb-6 pb-6 border-b border-gray-200">
               <div className="w-1/4 text-gray-600">Profile Picture</div>
               <div className="w-3/4">
-                <img
+                <Image width={100} height={100}
                   src={`${process.env.NEXT_PUBLIC_API_URL}${biodata.profile_image}`}
                   alt="Profile"
                   className="w-20 h-20 rounded-full object-cover"

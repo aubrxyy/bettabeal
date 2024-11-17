@@ -22,7 +22,7 @@ interface Comment {
   comment_text: string;
   created_at: string;
   updated_at: string;
-  user: any;
+  user: string;
   replies: Comment[];
 }
 

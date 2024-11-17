@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 interface Biodata {
   full_name: string;
@@ -129,7 +128,6 @@ export default function EditProfile() {
   return (
 
       <div className="bg-white w-full p-6 rounded-lg">
-      <ToastContainer />
         <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4">
@@ -188,7 +186,7 @@ export default function EditProfile() {
             </div>
             {imagePreview && (
               <div className="flex justify-center mt-4">
-                <img
+                <Image width={100} height={100}
                   src={imagePreview}
                   alt="Profile Preview"
                   className="w-24 h-24 rounded-full object-cover"

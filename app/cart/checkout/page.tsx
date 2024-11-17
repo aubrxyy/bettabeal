@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
 import { toast, ToastContainer } from 'react-toastify';
@@ -57,7 +57,7 @@ declare global {
   }
 }
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const [order, setOrder] = useState<Order | null>(null);
   const [courierOptions, setCourierOptions] = useState<CourierOption[]>([]);
   const [selectedCourier, setSelectedCourier] = useState<string | null>(null);
@@ -232,6 +232,32 @@ export default function CheckoutPage() {
               } else {
                 throw new Error(`Error: ${updateData.message}`);
               }
+
+              // Notify the server about the payment status update
+              const notificationResponse = await fetch('/api/notification', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  order_id: orderId,
+                  status: 'paid',
+                  result,
+                }),
+              });
+
+              if (!notificationResponse.ok) {
+                const text = await notificationResponse.text();
+                console.error(`Error notifying server: ${text}`);
+                throw new Error(`Error: ${notificationResponse.status} - ${text}`);
+              }
+
+              const notificationData = await notificationResponse.json();
+              if (notificationData.code === '000') {
+                console.log('Server notified about payment status update');
+              } else {
+                throw new Error(`Error: ${notificationData.message}`);
+              }
             } catch (error) {
               console.error('Error updating order status:', error);
               toast.error('Failed to update order status');
@@ -360,5 +386,13 @@ export default function CheckoutPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }

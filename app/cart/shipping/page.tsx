@@ -69,7 +69,7 @@ export default function ShippingPage() {
       };
     
       fetchAddresses();
-    }, [selectedAddress]);
+    });
 
     useEffect(() => {
       if (searchParams.get('success') === 'deleteSaved') {
