@@ -1,14 +1,14 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
-import Header from '../Header';
-import Navbar from '../Navbar';
-import Image from 'next/image';
-import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import Header from '../Header';
+import Navbar from '../Navbar';
 
 interface SellerBiodata {
   seller_id: number;
@@ -229,7 +229,7 @@ export default function ProfilePage() {
             )}
           </div>
           {imagePreview && (
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center my-4">
               <Image
                 src={imagePreview}
                 alt="Store Logo Preview"
