@@ -93,10 +93,14 @@ export function NewArrival() {
                 <h2 className={`${interSB.className} mx-4 text-sm text-gray-500 break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {product.category.category_name}
                 </h2>
-                {product.average_rating !== null && (
+                {product.average_rating !== 0 ? (
                   <div className="flex items-center ml-4 my-1">
                     <Icon icon="ic:baseline-star" className='text-yellow-500'/>
-                    <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>{product.average_rating}</span>
+                    <span className={`${interSB.className} ml-1 text-sm text-gray-600`}>{product.average_rating?.toFixed(1)}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center ml-4 my-1">
+                    &nbsp;
                   </div>
                 )}
                 <p className={`${interSB.className} ml-4 text-md text-[#0F4A99]`}>
