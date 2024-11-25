@@ -314,6 +314,7 @@ export default function CartPage() {
                           }
                         }}
                         className="py-1 border-t border rounded-md text-center w-16 outline-none"
+                        disabled
                       />
                       <button onClick={() => handleIncreaseQuantity(item.product.product_id)} className="px-2 py-1">
                         +

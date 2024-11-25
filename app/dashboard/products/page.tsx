@@ -4,7 +4,7 @@ import Header from "../Header";
 import Navbar from "../Navbar";
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { FiSearch, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiTrash2 } from 'react-icons/fi';
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,6 +14,7 @@ interface Product {
   description: string;
   price: string;
   stock_quantity: number;
+  average_rating: number;
   main_image: {
     image_url: string;
   } | null;
@@ -36,9 +37,11 @@ export default function Products() {
   const [category, setCategory] = useState('all');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchAllProducts = async (page: number = 1, accumulatedProducts: Product[] = []) => {
       const token = Cookies.get('USR');
       if (!token) {
         setError('User is not authenticated');
@@ -46,7 +49,7 @@ export default function Products() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products?page=${page}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -63,7 +66,12 @@ export default function Products() {
 
         const data = await response.json();
         if (data.code === '000' && data.status === 'success') {
-          setProducts(data.data.data);
+          const newProducts = accumulatedProducts.concat(data.data.data);
+          if (data.data.next_page_url) {
+            fetchAllProducts(page + 1, newProducts);
+          } else {
+            setProducts(newProducts);
+          }
         } else {
           setError(`Error: ${data.message}`);
         }
@@ -108,7 +116,7 @@ export default function Products() {
       }
     };
 
-    fetchProducts();
+    fetchAllProducts();
     fetchCategories();
   }, []);
 
@@ -160,6 +168,15 @@ export default function Products() {
     product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -175,7 +192,7 @@ export default function Products() {
             <Link href="/dashboard/products/add" className="text-white px-4 py-2 bg-blue-800 rounded-md">+ Add Product</Link>
           </div>
           <div className="flex items-center gap-4 p-4 bg-white rounded-t-md">
-            <select 
+            <select
               className="border bg-white text-[#0F4A99] rounded-md px-4 py-2 w-32"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -197,14 +214,7 @@ export default function Products() {
               />
             </div>
 
-            <button 
-              className="text-[#0F4A99] p-2 border-2 rounded-md"
-              onClick={() => {/* Implement edit functionality */}}
-            >
-              <FiEdit2 />
-            </button>
-
-            <button 
+            <button
               className="text-red-500 p-2 border-2 rounded-md"
               onClick={() => setShowConfirmation(true)}
             >
@@ -225,7 +235,7 @@ export default function Products() {
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map(product => (
+                {currentProducts.map(product => (
                   <tr key={product.product_id} className="border-t">
                     <td className="px-4 py-3">
                       <input
@@ -252,12 +262,42 @@ export default function Products() {
                     </td>
                     <td className="px-12 py-3 text-nowrap text-sm">{product.stock_quantity} in stock</td>
                     <td className="px-12 py-3 text-nowrap text-sm">Rp. {parseInt(product.price).toLocaleString('id-ID')}</td>
-                    <td className="px-12 py-3 text-sm">4.5</td>
+                    <td className="px-12 py-3 text-sm">{product.average_rating.toFixed(1)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <hr />
+          {/* Pagination */}
+          {filteredProducts.length > productsPerPage && (
+            <div className="flex justify-left mt-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 mx-1 text-[#0F4A99] rounded disabled:opacity-25"
+              >
+                &#10094;
+              </button>
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handlePageChange(i + 1)}
+                  className={`px-4 py-2 mx-1 ${currentPage === i + 1 ? 'bg-[#0F4A99] text-white' : 'text-[#0F4A99] bg-gray-100'} rounded-lg`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 mx-1 text-[#0F4A99] rounded disabled:opacity-25"
+              >
+                &#10095;
+              </button>
+            </div>
+          )}
           </div>
+
         </div>
       </div>
 

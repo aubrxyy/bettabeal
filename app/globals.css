@@ -121,3 +121,32 @@ body {
 .link-underline:hover::after {
   left: 0;
 }
+
+.product-swiper .swiper-button-next,
+.product-swiper .swiper-button-prev {
+  color: #0F4A99;
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-swiper .swiper-button-next:after,
+.product-swiper .swiper-button-prev:after {
+  font-size: 20px;
+}
+
+.thumbs-swiper .swiper-slide {
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.thumbs-swiper .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
+/* Optional: Add hover effect to thumbnails */
+.thumbs-swiper .swiper-slide:hover {
+  opacity: 0.8;
+}

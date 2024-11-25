@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   if (data.code === '000') {
                     setUser({
                       fullName: data.customer.full_name,
-                      profilePicture: `https://api.bettabeal.my.id${data.customer.profile_image}`,
+                      profilePicture: `${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`,
                     });
                   } else {
                     console.error('Failed to fetch user data');
@@ -153,11 +153,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <li>
                  <div className='bg-gradient-to-b from-[#0F4A99] to-[#38B6FF]'>
                     <Link
-                      href="/user/chat"
-                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname === '/user/chat' ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
+                      href="/user/reviews"
+                      className={`items-center flex flex-row py-4 pl-8 pr-28 hover:bg-gray-100 transition-all ${pathname === '/user/reviews' ? 'ml-2 bg-gray-200 hover:bg-gray-200' : 'bg-white'}`}
                     >
-                      <Icon icon="bxs:chat" className='mr-4 size-5' />
-                      Chat
+                      <Icon icon="ic:baseline-star" className='mr-4 size-5'/>
+                      My Reviews
                     </Link>
                  </div>
                 </li>

@@ -13,6 +13,12 @@ module.exports = {
                 port: '',
                 pathname: '/storage/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'api.bettabeal.my.id',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
 }

@@ -144,11 +144,11 @@ export function Header() {
                         onChange={handleSearchChange}
                         onKeyPress={handleSearchKeyPress}
                         className={`block w-full pl-10 xl:pr-12 py-3 border border-blue-600 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${interR.className}`}
-                        placeholder="Search"
+                        placeholder="Search our products"
                       />
                     </div>
                     {navigation.map((item) => {
-                      const isActive = pathname.endsWith(item.href);
+                      const isActive = item.href === '/' ? pathname === item.href : pathname.startsWith(item.href);
                       if (item.name === "Wishlist") {
                         return (
                           <Link key={item.name} href={item.href} className="relative flex items-center">
@@ -202,7 +202,7 @@ export function Header() {
                   as={Link}
                   href={item.href}
                   className={`${
-                    pathname.endsWith(item.href)
+                    item.href === '/' ? pathname === item.href : pathname.startsWith(item.href)
                       ? "bg-[#0F4A99] text-white"
                       : "text-gray-500 hover:text-white hover:bg-gray-400 max-lg:active:text-black text-nowrap"
                   } text-xl block py-2 px-8 ${interM.className}`}

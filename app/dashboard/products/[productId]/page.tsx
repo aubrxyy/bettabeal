@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Header from '../../Header';
 import Navbar from '../../Navbar';
 import Cookies from 'js-cookie';
-import Image from 'next/image';
 
 interface Category {
   category_id: number;
@@ -23,8 +22,6 @@ export default function EditProduct() {
     stockQuantity: '',
     category: '',
   });
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [errors, setErrors] = useState({
     productName: '',
@@ -32,10 +29,7 @@ export default function EditProduct() {
     price: '',
     stockQuantity: '',
     category: '',
-    mainImage: '',
   });
-  const [fileError, setFileError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -67,13 +61,10 @@ export default function EditProduct() {
           setFormData({
             productName: product.product_name,
             description: product.description,
-            price: product.price,
-            stockQuantity: product.stock_quantity,
+            price: product.price.toString(),
+            stockQuantity: product.stock_quantity.toString(),
             category: product.category_id.toString(),
           });
-          if (product.main_image) {
-            setImagePreviews([`${product.main_image.image_url}`]);
-          }
         } else {
           setErrors(prev => ({ ...prev, category: `Error: ${data.message}` }));
         }
@@ -122,56 +113,6 @@ export default function EditProduct() {
     fetchCategories();
   }, [productId]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      handleFiles(Array.from(e.target.files));
-    }
-  };
-
-  const handleFiles = (files: File[]) => {
-    const validFiles = files.filter(file => {
-      const isValidType = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
-      const isValidSize = file.size <= 2048 * 1024; // 2048 KB
-      if (!isValidType) {
-        setFileError('Only .jpeg, .png, and .jpg files are allowed.');
-        return false;
-      }
-      if (!isValidSize) {
-        setFileError('File size must be less than 2048 KB.');
-        return false;
-      }
-      return true;
-    });
-
-    if (validFiles.length > 0) {
-      setFileError(null);
-      setImages(validFiles.slice(0, 1)); // Only keep the first valid file
-      setImagePreviews(validFiles.slice(0, 1).map(file => URL.createObjectURL(file)));
-    }
-  };
-
-  const handleDeleteImage = () => {
-    setImages([]);
-    setImagePreviews([]);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files) {
-      handleFiles(Array.from(e.dataTransfer.files));
-    }
-  };
-
   const handleSubmit = async () => {
     const token = Cookies.get('USR');
     if (!token) {
@@ -186,7 +127,6 @@ export default function EditProduct() {
       price: '',
       stockQuantity: '',
       category: '',
-      mainImage: '',
     };
 
     if (!formData.productName) {
@@ -214,38 +154,26 @@ export default function EditProduct() {
       hasError = true;
     }
 
-    if (fileError) {
-      newErrors.mainImage = 'Please fix the file upload errors before submitting.';
-      hasError = true;
-    }
-
-    if (images.length === 0 && imagePreviews.length === 0) {
-      newErrors.mainImage = 'Product image is required.';
-      hasError = true;
-    }
-
     if (hasError) {
       setErrors(newErrors);
       return;
     }
 
-    const formDataToSend = new FormData();
+    const formDataToSend = new URLSearchParams();
     formDataToSend.append('product_name', formData.productName);
     formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
     formDataToSend.append('stock_quantity', formData.stockQuantity);
     formDataToSend.append('category_id', formData.category);
-    if (images.length > 0) {
-      formDataToSend.append('main_image', images[0]);
-    }
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: formDataToSend,
+        body: formDataToSend.toString(),
       });
 
       const data = await response.json();
@@ -253,11 +181,11 @@ export default function EditProduct() {
         console.log('Product updated successfully:', data);
         router.push('/dashboard/products');
       } else {
-        setErrors(prev => ({ ...prev, mainImage: `Error: ${data.errors.main_image.join(', ')}` }));
+        setErrors(prev => ({ ...prev, category: `Error: ${data.message}` }));
       }
     } catch (error) {
       console.error('Fetch error:', error);
-      setErrors(prev => ({ ...prev, mainImage: `Fetch error: ${(error as Error).message}` }));
+      setErrors(prev => ({ ...prev, category: `Fetch error: ${(error as Error).message}` }));
     }
   };
 
@@ -306,52 +234,6 @@ export default function EditProduct() {
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                   />
                   {errors.description && <p className="text-red-500 mt-1">{errors.description}</p>}
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold mb-4">Images</h2>
-              <div 
-                className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center ${isDragging ? 'bg-gray-100' : ''}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                {images.length === 0 && imagePreviews.length === 0 && (
-                  <>
-                    <input
-                      type="file"
-                      multiple
-                      accept=".jpeg,.png,.jpg"
-                      className="hidden"
-                      id="file-upload"
-                      onChange={handleFileChange}
-                    />
-                    <label htmlFor="file-upload" className="cursor-pointer">
-                      <div className="flex flex-col items-center">
-                        <div className="bg-blue-500 text-white px-4 py-2 rounded-md mb-2">
-                          Add File
-                        </div>
-                        <span className="text-sm text-gray-500">Or drag and drop files</span>
-                      </div>
-                    </label>
-                  </>
-                )}
-                {fileError && <p className="text-red-500 mt-2">{fileError}</p>}
-                {errors.mainImage && <p className="text-red-500 mt-2">{errors.mainImage}</p>}
-                <div className="mt-4 flex flex-wrap justify-center gap-4">
-                  {imagePreviews.map((src, index) => (
-                    <div key={index} className="relative">
-                      <Image width={100} height={100} src={src} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-md" />
-                      <button
-                        onClick={() => handleDeleteImage()}
-                        className="absolute top-0 right-0 bg-red-500 text-white rounded-lg p-3 size-4 flex items-center text-center text-xl justify-center"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>

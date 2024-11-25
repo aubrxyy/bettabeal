@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <div className="flex">
-        <div className="h-screen bg-white pr-2 text-[#38B6FF] pt-24 relative flex flex-col">
+        <div className="h-screen bg-white pr-2 text-[#38B6FF] pt-24 relative flex flex-col ">
           <nav className="flex-1 ">
             <ul className='flex flex-col'>
               <li>
@@ -31,11 +31,29 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
+                  href="/dashboard/categories"
+                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith ('/dashboard/categories') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                >
+                  <Icon icon="line-md:folder-multiple-filled" className='mr-4 size-5' />
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/dashboard/products"
                   className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith ('/dashboard/products') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
                 >
                   <Icon icon="tdesign:tag" className='mr-4 size-5' />
                   Product
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/gallery"
+                  className={`text-nowrap items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith ('/dashboard/gallery') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
+                >
+                  <Icon icon="line-md:image-filled" className='mr-4 size-5' />
+                  Product gallery
                 </Link>
               </li>
               <li>
@@ -47,15 +65,7 @@ const Navbar = () => {
                   Article
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/dashboard/chat"
-                  className={`items-center flex flex-row py-4 px-16 hover:bg-gradient-to-b hover:bg-gray-100 rounded-r-3xl transition-all ${pathname.startsWith('/dashboard/chat') ? 'bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-white' : ''}`}
-                >
-                  <Icon icon="line-md:chat" className='mr-4 size-5' />
-                  Chat
-                </Link>
-              </li>
+          
               <li>
                 <Link
                   href="/dashboard/profile"

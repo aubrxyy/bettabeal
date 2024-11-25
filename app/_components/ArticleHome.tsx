@@ -58,7 +58,7 @@ export function ArticleHome() {
         </h4>
         <div className='flex flex-wrap mt-12 justify-center gap-5'>
           {articles.slice(0, 2).map(article => (
-            <Link key={article.article_id} href={`/article/${article.article_id}`} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-[32rem] pb-20 rounded-xl hover:opacity-80 transition-all'>
+            <Link key={article.article_id} href={`/articles/${article.article_id}`} className='bg-gray-200 w-full max-sm:w-[90%] md:w-[48%] lg:w-[48%] h-[32rem] pb-20 rounded-xl hover:opacity-80 transition-all'>
               <Image src={article.image ? `https://api.bettabeal.my.id${article.image}` : '/placeholder.png'} alt={article.title} width={700} height={500} className='w-full mx-auto h-72 object-cover rounded-tl-xl rounded-tr-xl'/>
               <h1 className={`${poppins.className} ml-4 mt-4 text-xl text-[#0F4A99] line-clamp-2`}>
                 {article.title}

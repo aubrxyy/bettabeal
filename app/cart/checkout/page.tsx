@@ -7,32 +7,35 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface OrderItem {
-  order_item_id: number;
-  order_id: number;
-  product_id: number;
+  product_name: string;
   quantity: number;
   price: string;
   subtotal: string;
-  product: {
-    product_id: number;
-    product_name: string;
-    description: string;
-    price: number;
-  };
 }
 
 interface Order {
   order_id: number;
-  user_id: number;
-  address_id: number;
+  customer: {
+    user_id: number;
+    username: string;
+    full_name: string;
+    email: string;
+    phone_number: string;
+  };
+  items: OrderItem[];
+  shipping_address: {
+    address: string;
+    district_id: number;
+    poscode_id: number;
+  };
   total_amount: string;
   status: string;
-  snap_token: string;
-  items: OrderItem[];
-  address: {
-    address_id: number;
-    biteship_id: string;
-  };
+  payment_status: string | null;
+  payment_type: string | null;
+  transaction_id: string | null;
+  paid_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface CourierOption {
@@ -86,7 +89,6 @@ function CheckoutPageContent() {
 
         if (!response.ok) {
           const text = await response.text();
-          console.error(`Error fetching order details: ${text}`);
           setError(`Error: ${response.status} - ${text}`);
           return;
         }
@@ -95,12 +97,10 @@ function CheckoutPageContent() {
         console.log('Order details fetched:', data);
         if (data.code === '000') {
           setOrder(data.data);
-          console.log('Order state set:', data.data);
         } else {
           setError(`Error: ${data.message}`);
         }
       } catch (error) {
-        console.error('Fetch error:', error);
         setError(`Fetch error: ${(error as Error).message}`);
       }
     };
@@ -109,76 +109,6 @@ function CheckoutPageContent() {
       fetchOrderDetails();
     }
   }, [orderId]);
-
-  useEffect(() => {
-    const fetchCourierOptions = async () => {
-      if (!order) return;
-
-      const token = getCookie('USR');
-      if (!token) {
-        setError('User is not authenticated');
-        return;
-      }
-
-      const items = order.items.map(item => ({
-        name: item.product.product_name,
-        description: item.product.description,
-        value: item.product.price,
-        weight: 500,
-        quantity: item.quantity,
-      }));
-
-      try {
-        console.log('Fetching courier options with items:', items);
-        const response = await fetch('https://api.biteship.com/v1/rates/couriers', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_BITESHIP_API_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            origin_area_id: 'IDNP9IDNC74IDND6715IDZ16128',
-            destination_area_id: order.address.biteship_id,
-            couriers: 'paxel,jne,tiki,jnt',
-            items,
-          }),
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          console.error(`Error fetching courier options: ${text}`);
-          setError(`Error: ${response.status} - ${text}`);
-          return;
-        }
-
-        const data = await response.json();
-        console.log('Courier options fetched:', data);
-        if (data.success) {
-          const optionsWithId = data.pricing.map((option: CourierOption, index: number) => {
-            const { id, ...rest } = option;
-            return {
-              id: `${option.courier_name}-${option.courier_service_code}-${index}`,
-              ...rest,
-            };
-          });
-          setCourierOptions(optionsWithId);
-        } else {
-          setError(`Error: ${data.message}`);
-        }
-      } catch (error) {
-        console.error('Fetch error:', error);
-        setError(`Fetch error: ${(error as Error).message}`);
-      }
-    };
-
-    if (order) {
-      fetchCourierOptions();
-    }
-  }, [order]);
-
-  const handleCourierChange = (courierId: string) => {
-    setSelectedCourier(courierId);
-  };
 
   const handlePayment = async () => {
     const token = getCookie('USR');
@@ -206,62 +136,10 @@ function CheckoutPageContent() {
       if (data.code === '000' && data.data.snap_token) {
         const snapToken = data.data.snap_token;
         window.snap.pay(snapToken, {
-          onSuccess: async function(result) {
+          onSuccess: async function (result) {
             console.log('Payment success:', result);
             toast.success('Payment successful!');
-            // Update order status to "paid"
-            try {
-              const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/${orderId}`, {
-                method: 'PUT',
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: 'paid' }),
-              });
-
-              if (!updateResponse.ok) {
-                const text = await updateResponse.text();
-                console.error(`Error updating order status: ${text}`);
-                throw new Error(`Error: ${updateResponse.status} - ${text}`);
-              }
-
-              const updateData = await updateResponse.json();
-              if (updateData.code === '000') {
-                console.log('Order status updated to paid');
-              } else {
-                throw new Error(`Error: ${updateData.message}`);
-              }
-
-              // Notify the server about the payment status update
-              const notificationResponse = await fetch('/api/notification', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  order_id: orderId,
-                  status: 'paid',
-                  result,
-                }),
-              });
-
-              if (!notificationResponse.ok) {
-                const text = await notificationResponse.text();
-                console.error(`Error notifying server: ${text}`);
-                throw new Error(`Error: ${notificationResponse.status} - ${text}`);
-              }
-
-              const notificationData = await notificationResponse.json();
-              if (notificationData.code === '000') {
-                console.log('Server notified about payment status update');
-              } else {
-                throw new Error(`Error: ${notificationData.message}`);
-              }
-            } catch (error) {
-              console.error('Error updating order status:', error);
-              toast.error('Failed to update order status');
-            }
+            router.push('/cart/success');
           },
           onPending: function(result) {
             console.log('Payment pending:', result);
@@ -325,33 +203,12 @@ function CheckoutPageContent() {
         <h2 className="text-2xl font-semibold mb-4">Products</h2>
         <ul className="space-y-4">
           {order.items.map(item => (
-            <li key={item.order_item_id} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+            <li key={item.product_name} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm">
               <div>
-                <span className="font-semibold">{item.quantity} x {item.product.product_name}</span>
-                <p className="text-gray-600">{item.product.description}</p>
+                <span className="font-semibold">{item.quantity} x {item.product_name}</span>
+                {/* Assuming description is not available in the current structure */}
               </div>
               <span className="font-semibold">{formatPrice(parseFloat(item.subtotal))}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Available Couriers</h2>
-        <ul className="space-y-4">
-          {courierOptions.map(option => (
-            <li key={option.id} className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="courier"
-                  value={option.id}
-                  checked={selectedCourier === option.id}
-                  onChange={() => handleCourierChange(option.id)}
-                  className="mr-2"
-                />
-                <span>{option.courier_name} - {option.courier_service_name} ({formatDuration(option.duration)})</span>
-              </label>
-              <span className="font-semibold">{formatPrice(option.price)}</span>
             </li>
           ))}
         </ul>

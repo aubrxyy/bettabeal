@@ -1,10 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getCookie } from '@/app/_utils/cookies';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+interface District {
+  district_id: number;
+  district_name: string;
+}
+
+interface Poscode {
+  poscode_id: number;
+  code: string;
+}
+
+interface Area {
+  id: string;
+  name: string;
+}
 
 export default function AddressDetails() {
   const [name, setName] = useState('');
@@ -13,16 +28,74 @@ export default function AddressDetails() {
   const [postcodeId, setPostcodeId] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isMain, setIsMain] = useState(false);
-  const router = useRouter();
-
-  interface Area {
-    id: string;
-    name: string;
-  }
-
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [postcodes, setPostcodes] = useState<Poscode[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [selectedArea, setSelectedArea] = useState('');
   const [areaInput, setAreaInput] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      const token = getCookie('USR');
+      if (!token) {
+        router.push('/login');
+      }
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/districts`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.code === '000' && data.status === 'success') {
+          setDistricts(data.data);
+        } else {
+          toast.error('Failed to fetch districts');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('Failed to fetch districts');
+      }
+    };
+
+    fetchDistricts();
+  }, [router]);
+
+  useEffect(() => {
+    const fetchPostcodes = async () => {
+      if (!districtId) return;
+
+      const token = getCookie('USR');
+      if (!token) {
+        router.push('/login');
+      }
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/districts/${districtId}/poscodes`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (data.code === '000' && data.status === 'success') {
+          setPostcodes(data.data);
+        } else {
+          toast.error('Failed to fetch postcodes');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        toast.error('Failed to fetch postcodes');
+      }
+    };
+
+    fetchPostcodes();
+  }, [districtId, router]);
 
   const fetchAreas = async (input: string) => {
     const token = getCookie('USR');
@@ -116,23 +189,36 @@ export default function AddressDetails() {
           />
         </div>
         <div className="mb-2">
-          <label className="block text-gray-700 font-semibold mb-1">District ID:</label>
-          <input
-            type="text"
+          <label className="block text-gray-700 font-semibold mb-1">District:</label>
+          <select
             value={districtId}
             onChange={(e) => setDistrictId(e.target.value)}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-          />
+          >
+            <option value="">Select District</option>
+            {districts.map((district) => (
+              <option key={district.district_id} value={district.district_id}>
+                {district.district_name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-2">
-          <label className="block text-gray-700 font-semibold mb-1">Postcode ID:</label>
-          <input
-            type="text"
+          <label className="block text-gray-700 font-semibold mb-1">Postcode:</label>
+          <select
             value={postcodeId}
             onChange={(e) => setPostcodeId(e.target.value)}
+            required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-          />
+          >
+            <option value="">Select Postcode</option>
+            {postcodes.map((postcode) => (
+              <option key={postcode.poscode_id} value={postcode.poscode_id}>
+                {postcode.code}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-2">
           <label className="block text-gray-700 font-semibold mb-1">Phone Number:</label>
@@ -155,7 +241,7 @@ export default function AddressDetails() {
           />
           <span className="text-gray-700">Set as main address</span>
         </div>
-        <div className="mb-4 relativ2">
+        <div className="mb-4 relative">
           <label className="block text-gray-700 font-semibold mb-1">Area:</label>
           <input
             type="text"

@@ -67,9 +67,9 @@
         </div>
         <div className='flex flex-row'>
           <div className="rounded-full size-8 bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-center text-white mt-1 ">
-            <p className='mt-1'>{username ? username.charAt(0).toUpperCase() : ''}</p>
+            <p className='mt-1'>B</p>
           </div>
-          <span className="ml-4 text-gray-700 items-center flex justify-center">{username}</span>
+          <span className="ml-4 text-gray-700 items-center flex justify-center">BettaBeal</span>
         </div>
         <div>
           <button onClick={handleLogout} className="bg-red-500 text-white p-2 rounded">Logout</button>

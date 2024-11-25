@@ -14,7 +14,6 @@ interface Address {
   postcode_id: number | null;
   phone_number: string;
   is_main: number;
-  biteship_id?: string;
 }
 
 export default function ShippingPage() {
@@ -28,14 +27,14 @@ export default function ShippingPage() {
   const SearchParamsComponent = () => {
     const searchParams = useSearchParams();
 
-        useEffect(() => {
+    useEffect(() => {
       const fetchAddresses = async () => {
         const token = getCookie('USR');
         if (!token) {
           setError('User is not authenticated');
           return;
         }
-    
+
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/addresses`, {
             method: 'GET',
@@ -44,13 +43,13 @@ export default function ShippingPage() {
               'Content-Type': 'application/json',
             },
           });
-    
+
           if (!response.ok) {
             const text = await response.text();
             setError(`Error: ${response.status} - ${text}`);
             return;
           }
-    
+
           const data = await response.json();
           if (data.code === '000') {
             setAddresses(data.data);
@@ -67,9 +66,9 @@ export default function ShippingPage() {
           setError(`Fetch error: ${(error as Error).message}`);
         }
       };
-    
+
       fetchAddresses();
-    });
+    }, [selectedAddress]);
 
     useEffect(() => {
       if (searchParams.get('success') === 'deleteSaved') {

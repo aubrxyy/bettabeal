@@ -42,10 +42,11 @@ export default function Login() {
           .then(response => response.json())
           .then(data => {
             if (data.token) {
-              const maxAge = rememberMe ? 30 * 24 * 60 * 60 : 3600; // 30 days or 1 hour
-              setCookie('USR', data.token, { secure: true, sameSite: 'Strict', maxAge });
-              setCookie('UID', data.user.user_id, { secure: true, sameSite: 'Strict', maxAge });
-              localStorage.setItem('token', data.token);
+                const maxAge = 30 * 24 * 60 * 60;
+              const secure = window.location.protocol === 'https:';
+
+              setCookie('USR', data.token, { secure, sameSite: 'Strict', maxAge });
+              setCookie('UID', data.user.user_id, { secure, sameSite: 'Strict', maxAge });
 
               fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication`, {
                 method: 'GET',
