@@ -7,7 +7,6 @@ import Navbar from '../Navbar';
 import Image from 'next/image';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 interface SellerBiodata {
@@ -100,9 +99,10 @@ export default function ProfilePage() {
       });
 
       const data = await response.json();
-      if (data.code === '000' && data.status === 'success') {
-        setBiodata(data.seller);
+      if (data.code === '000') {
+        setBiodata(data.data);
         handleClose();
+        setError(null); // Clear any previous errors
       } else {
         setError(`Error: ${data.message}`);
       }
@@ -170,26 +170,25 @@ export default function ProfilePage() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-                  <h2 id="modal-modal-title" className="text-lg font-bold mb-4">Edit Profile</h2>
-                  <label className="block text-gray-700 font-semibold mb-1">Store Name:</label>
+          <h2 id="modal-modal-title" className="text-lg font-bold mb-4">Edit Profile</h2>
+          <label className="block text-gray-700 font-semibold mb-1">Store Name:</label>
           <input
             value={formData.store_name}
             onChange={(e) => setFormData({ ...formData, store_name: e.target.value })}
             className="mb-4 border-2 py-2 w-full px-2 rounded-md"
-                  />
-            <label className="block text-gray-700 font-semibold mb-1">Store Address:</label>
+          />
+          <label className="block text-gray-700 font-semibold mb-1">Store Address:</label>
           <input
             value={formData.store_address}
             onChange={(e) => setFormData({ ...formData, store_address: e.target.value })}
             className="mb-4 border-2 py-2 w-full px-2 rounded-md"
           />
-            <label className="block text-gray-700 font-semibold mb-1">Store Description:</label>
-                  <textarea
-                      
+          <label className="block text-gray-700 font-semibold mb-1">Store Description:</label>
+          <textarea
             value={formData.store_description}
             onChange={(e) => setFormData({ ...formData, store_description: e.target.value })}
-                      className="mb-4 border-2 py-2 w-full px-2 rounded-md"
-                      rows={4}
+            className="mb-4 border-2 py-2 w-full px-2 rounded-md"
+            rows={4}
           />
           <Button
             onClick={handleEdit}
