@@ -66,8 +66,10 @@ export function Header() {
         .then(response => response.json())
         .then(data => {
           if (data.code === '000') {
-            setProfileImage(`${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`);
             setUserName(data.customer.full_name);
+          }
+          if (data.code === '000' && data.customer.profile_image !== null) {
+            setProfileImage(`${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`);
           }
         })
         .catch(error => console.error('Error fetching user profile:', error));
