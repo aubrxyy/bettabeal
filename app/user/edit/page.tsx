@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface Biodata {
   full_name: string;
@@ -177,7 +177,7 @@ export default function EditProfile() {
             <label className="w-1/3 text-sm font-medium text-gray-700">Profile Image</label>
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg, image/png, image/jpg"
               onChange={handleFileChange}
               className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
             />

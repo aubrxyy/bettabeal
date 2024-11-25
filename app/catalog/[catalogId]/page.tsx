@@ -532,20 +532,26 @@ export default function ProductDetail() {
 
           return (
             <div key={review.review_id} className='mt-8 border-b pb-4'>
-              <div className='flex items-center gap-x-4'>
-                <Image
-                  src={profileImageUrl}
-                  alt="User Avatar"
-                  width={48}
-                  height={48}
-                  className="rounded-full size-12"
-                />
+                <div className='flex items-center gap-x-4'>
+                                {profileImageUrl ? (
+                  <Image
+                    src={profileImageUrl}
+                    alt="User Avatar"
+                    width={48}
+                    height={48}
+                    className="rounded-full size-12"
+                  />
+                ) : (
+                  <div className="rounded-full size-12 bg-gray-300 flex items-center justify-center text-white font-bold text-lg">
+                    {customer?.full_name ? customer.full_name.charAt(0).toUpperCase() : '-'}
+                  </div>
+                )}
                 <div>
                   <h3 className='font-semibold'>{customer?.full_name || 'Anonymous'}</h3>
                   <Rating name="read-only" value={review.rating} precision={0.5} size="small" readOnly />
                 </div>
                 <span className='ml-auto text-gray-500'>{formatDate(review.created_at)}</span>
-              </div>
+                </div>
               <p className='mt-4 text-gray-600'>
                 {review.comment}
               </p>
