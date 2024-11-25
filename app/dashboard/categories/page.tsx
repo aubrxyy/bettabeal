@@ -118,11 +118,7 @@ export default function CategoriesPage() {
                       <Link href={`/dashboard/categories/${category.category_id}`}>
                         <FiEdit2 className='text-blue-700 border rounded-md size-8 p-2'/>
                       </Link>
-                      <button
-                        onClick={() => handleDelete(category.category_id)}
-                      >
-                        <FiTrash2 className='text-red-700 border rounded-md size-8 p-2' />
-                      </button>
+                      
                     </td>
                   </tr>
                 ))}

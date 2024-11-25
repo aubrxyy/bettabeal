@@ -21,7 +21,8 @@ export default function AddCategoryPage() {
     formData.append('description', description);
 
     try {
-      const response = await fetch('/api/admin/categories', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories`
+    , {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${getCookie('USR')}`,
@@ -36,7 +37,7 @@ export default function AddCategoryPage() {
         return;
       }
 
-      router.push('/categories');
+      router.push('/dashboard/categories');
     } catch (error) {
       console.error('Add error:', error);
       setError(`Add error: ${(error as Error).message}`);

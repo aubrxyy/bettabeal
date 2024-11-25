@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
-import { toast, ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Address {
@@ -25,7 +25,6 @@ export default function ShippingPage() {
   const router = useRouter();
 
   const SearchParamsComponent = () => {
-    const searchParams = useSearchParams();
 
     useEffect(() => {
       const fetchAddresses = async () => {
@@ -70,13 +69,6 @@ export default function ShippingPage() {
       fetchAddresses();
     }, [selectedAddress]);
 
-    useEffect(() => {
-      if (searchParams.get('success') === 'deleteSaved') {
-        toast.success('Address deleted successfully!');
-      } else if (searchParams.get('success') === 'editSaved') {
-        toast.success('Changes saved successfully!');
-      }
-    }, [searchParams]);
 
     return null;
   };
@@ -176,7 +168,6 @@ export default function ShippingPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <ToastContainer position='bottom-right' closeOnClick />
       <h1 className="text-2xl font-bold mb-4">Select Shipping Address</h1>
       <ul className="space-y-4">
         {addresses.map((address) => (

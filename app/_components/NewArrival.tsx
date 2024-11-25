@@ -84,9 +84,7 @@ export function NewArrival() {
               <Link key={product.product_id} href={`/catalog/${product.product_id}`} className='relative bg-gray-200 w-full max-sm:w-[90%] md:w-[36%] lg:w-[28%] xl:w-[17%] min-h-[23rem] max-h-fit rounded-xl'>
                 
                 <Image src={product.main_image ? product.main_image.image_url : '/placeholder.png'} alt={product.product_name} width={135} height={200} className='mx-auto mb-2 mt-6 w-40 h-48'/>
-                {isNewProduct(product.created_at) && (
-                  <span className={`${poppinsB.className} ml-4 bg-gradient-to-b from-[#CF1669] to-[#FF3A44] text-white text-xs px-2 rounded-lg`}>NEW</span>
-                )}
+                
                 <h1 className={`${poppinsB.className} mx-4 mt-1 text-md break-words truncate`} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {product.product_name}
                 </h1>
@@ -100,7 +98,7 @@ export function NewArrival() {
                   </div>
                 ) : (
                   <div className="flex items-center ml-4 my-1">
-                    &nbsp;
+                      &nbsp;
                   </div>
                 )}
                 <p className={`${interSB.className} ml-4 text-md text-[#0F4A99]`}>

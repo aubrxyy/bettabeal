@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
-import 'react-toastify/dist/ReactToastify.css';
 
 interface Address {
   address_id: number;

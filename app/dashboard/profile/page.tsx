@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCookie } from '@/app/_utils/cookies';
 import Header from '../Header';
@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { useDropzone } from 'react-dropzone';
 
 interface SellerBiodata {
   seller_id: number;
@@ -39,7 +40,9 @@ export default function ProfilePage() {
     store_name: '',
     store_address: '',
     store_description: '',
+    store_logo: null as File | null,
   });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -65,7 +68,11 @@ export default function ProfilePage() {
             store_name: data.seller.store_name,
             store_address: data.seller.store_address,
             store_description: data.seller.store_description,
+            store_logo: null,
           });
+          if (data.seller.store_logo) {
+            setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}/storage/${data.seller.store_logo}`);
+          }
         } else {
           setError(`Error: ${data.message}`);
         }
@@ -88,14 +95,21 @@ export default function ProfilePage() {
       return;
     }
 
+    const formDataToSend = new FormData();
+    formDataToSend.append('store_name', formData.store_name);
+    formDataToSend.append('store_address', formData.store_address);
+    formDataToSend.append('store_description', formData.store_description);
+    if (formData.store_logo) {
+      formDataToSend.append('store_logo', formData.store_logo);
+    }
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/biodata`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
       const data = await response.json();
@@ -111,6 +125,21 @@ export default function ProfilePage() {
       setError(`Edit error: ${(error as Error).message}`);
     }
   };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setFormData(prev => ({ ...prev, store_logo: file }));
+    setImagePreview(URL.createObjectURL(file));
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': ['.jpeg', '.jpg'],
+      'image/png': ['.png']
+    },
+    maxSize: 2048 * 1024, // 2 MB
+  });
 
   if (error) {
     return <div>{error}</div>;
@@ -136,9 +165,9 @@ export default function ProfilePage() {
 
           <div className="p-6 bg-white rounded-lg shadow-md">
             <div className="flex flex-col items-center">
-              {biodata.store_logo ? (
+              {imagePreview ? (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${biodata.store_logo}`}
+                  src={imagePreview}
                   alt={biodata.store_name}
                   width={150}
                   height={150}
@@ -190,11 +219,32 @@ export default function ProfilePage() {
             className="mb-4 border-2 py-2 w-full px-2 rounded-md"
             rows={4}
           />
+          <label className="block text-gray-700 font-semibold mb-1">Store Logo:</label>
+          <div {...getRootProps()} className={`border-2 border-dashed rounded-md p-4 text-center ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}>
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p className="text-blue-500">Drop the files here ...</p>
+            ) : (
+              <p className="text-gray-500">Drag and drop an image here, or click to select an image</p>
+            )}
+          </div>
+          {imagePreview && (
+            <div className="flex justify-center mt-4">
+              <Image
+                src={imagePreview}
+                alt="Store Logo Preview"
+                width={100}
+                height={100}
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            </div>
+          )}
           <Button
             onClick={handleEdit}
             variant="contained"
             color="primary"
             fullWidth
+            className="mt-4"
           >
             Save Changes
           </Button>
