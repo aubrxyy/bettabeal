@@ -355,9 +355,9 @@ export default function AddProduct() {
                   </label>
                 ))}
                 {errors.category && <p className="text-red-500 mt-1">{errors.category}</p>}
-                <button className="text-blue-500 hover:underline mt-4">
+                <Link href="/dashboard/categories/add" className="text-blue-500 hover:underline mt-4">
                   Create New
-                </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Header from '../../Header';
 import Navbar from '../../Navbar';
-import Cookies from 'js-cookie';
 
 interface Category {
   category_id: number;
@@ -286,9 +286,9 @@ export default function EditProduct() {
                   </label>
                 ))}
                 {errors.category && <p className="text-red-500 mt-1">{errors.category}</p>}
-                <button className="text-blue-500 hover:underline mt-4">
+                <Link href="/dashboard/categories/add" className="text-blue-500 hover:underline mt-4">
                   Create New
-                </button>
+                </Link>
               </div>
             </div>
           </div>
