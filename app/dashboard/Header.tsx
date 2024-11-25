@@ -1,19 +1,20 @@
   'use client';
-
+  
   import { Icon } from '@iconify/react';
   import Image from 'next/image';
   import { useRouter } from 'next/navigation';
   import { useEffect, useState } from 'react';
   import { getCookie, setCookie } from '../_utils/cookies';
-
+  
   export default function Header() {
     const router = useRouter();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [username, setUsername] = useState<string | null>(null);
-
+    const [storeLogo, setStoreLogo] = useState<string | null>(null);
+  
     useEffect(() => {
       const uid = getCookie('UID');
-
+  
       const fetchUserInformation = async (uid: string) => {
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sellers/${uid}`);
@@ -21,6 +22,7 @@
           if (data.code === '000') {
             setIsAuthorized(true);
             setUsername(data.seller.store_name);
+            setStoreLogo(data.seller.store_logo);
           } else {
             router.push('/error');
           }
@@ -29,15 +31,14 @@
           router.push('/error');
         }
       };
-      
+  
       if (uid) {
         fetchUserInformation(uid);
       } else {
         router.push('/error');
       }
     }, [router]);
-
-
+  
     const handleLogout = () => {
       const exp = new Date(0);
       setCookie('USR', '', { expires: exp, secure: true, sameSite: 'Strict' });
@@ -45,11 +46,15 @@
       localStorage.removeItem('token');
       router.push('/login');
     };
-
+  
     if (!isAuthorized) {
       return null;
     }
-
+  
+    const getInitials = (name: string) => {
+      return name.charAt(0).toUpperCase();
+    };
+  
     return (
       <header className="px-10 fixed top-0 left-0 right-0 flex justify-between items-center bg-white p-4 z-10 shadow-sm">
         <div className="flex items-center">
@@ -65,9 +70,20 @@
             />
           </div>
         </div>
-        <div className='flex flex-row'>
-          <div className="rounded-full size-8 bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-center text-white mt-1 ">
-            <p className='mt-1'>{username ? username.charAt(0).toUpperCase() : ''}</p>  </div>
+        <div className='flex flex-row items-center'>
+          {storeLogo ? (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_URL}/storage/${storeLogo}`}
+              alt={username || 'Store Logo'}
+              width={32}
+              height={32}
+              className="rounded-full size-10 object-cover"
+            />
+          ) : (
+            <div className="rounded-full size-8 bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] text-center text-white mt-1 flex items-center justify-center">
+              <p className='mt-1'>{username ? getInitials(username) : ''}</p>
+            </div>
+          )}
           <span className="ml-4 text-gray-700 items-center flex justify-center">{username}</span>
         </div>
         <div>

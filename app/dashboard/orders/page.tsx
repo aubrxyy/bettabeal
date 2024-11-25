@@ -388,26 +388,20 @@ export default function Orders() {
                           ? 'bg-orange-300 text-white'
                           : order.shipping_status === 'processing'
                           ? 'bg-yellow-400 text-black'
-                          : 'bg-red-500 text-white'
+                          : 'text-black'
                         }`}
                       >
-                      {order.shipping_status === 'shipped' ? 'SHIPPING' : order.shipping_status ? order.shipping_status.toUpperCase() : 'N/A'}
+                      {order.shipping_status === 'shipped' ? 'SHIPPING' : order.shipping_status ? order.shipping_status.toUpperCase() : '-'}
                       </span>
                     </td>
                     <td className="p-2">{formatCurrency(order.total_amount)}</td>
                     <td className="py-2 px-4 border-b">
-                  {order.shipping_status === 'delivered' ? (
-                    <span className="px-2 py-1 rounded-md font-bold text-xs bg-green-500 text-white">
-                      COMPLETED
-                    </span>
-                  ) : (
                     <button
                       onClick={() => fetchOrderDetails(order.order_id)}
                       className="text-blue-800 text-xs hover:underline text-nowrap"
                     >
                       View Order
                     </button>
-                  )}
                 </td>
                   </tr>
                 ))}

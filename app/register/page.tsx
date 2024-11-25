@@ -50,9 +50,9 @@ export default function Register() {
           if (data.token) {
             localStorage.setItem('token', data.token);
             document.cookie = `currentUser=${data.token}; path=/;`;
-            setSuccessMessage('Registration successful! Redirecting to home page.');
+            setSuccessMessage('Registration successful! Redirecting to login.');
             setTimeout(() => {
-              window.location.href = '/';
+              window.location.href = '/login';
             }, 1000); // Redirect after 1 second
           } else {
             setErrorMessage('Registration failed, please check your details!');
