@@ -450,13 +450,13 @@ export default function ProductDetail() {
             </button>
           </div>
             <hr className='mt-4 mb-2'/>
-            <div className='flex flex-row justify-between mt-6'>
+            <div className='flex flex-row justify-between gap-x-4 mt-6'>
              <div className='flex flex-row gap-x-4'>
                <div className='items-center bg-gray-200 rounded-lg size-14 flex justify-center text-gray-500'>
                   <Icon icon="uil:truck" width={28} height={28}/>
                 </div>
                 <div className='flex-col flex gap-y-1 text-left'>
-                  <p className='text-gray-600'>Free Delivery</p>
+                  <p className='text-gray-600 text-sm text-nowrap'>Free Delivery</p>
                   <p className='text-sm'>Bogor Area</p>
               </div>
              </div>
@@ -465,7 +465,7 @@ export default function ProductDetail() {
                   <Icon icon="material-symbols-light:store-outline" width={28} height={28}/>
                 </div>
                 <div className='flex-col flex gap-y-1 text-left'>
-                  <p className='text-gray-600'>Available stock</p>
+                  <p className='text-gray-600 text-sm text-nowrap'>Available stock</p>
                     <p className={`text-sm font-bold ${product.stock_quantity === 0 ? 'text-red-600' : ''}`}>{product.stock_quantity}</p>
                 </div>
               </div>
@@ -474,8 +474,8 @@ export default function ProductDetail() {
                   <Icon icon="material-symbols-light:store-outline" width={28} height={28}/>
                 </div>
                 <div className='flex-col flex gap-y-1 text-left'>
-                  <p className='text-gray-600'>Products sold</p>
-                  <p className='text-sm'>{product.total_sales}</p>
+                  <p className='text-gray-600 text-sm text-nowrap'>Products sold</p>
+                  <p className='text-sm font-bold'>{product.total_sales}</p>
                 </div>
               </div>
             </div>

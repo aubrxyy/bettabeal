@@ -273,7 +273,7 @@ export default function ReviewPage() {
           {paginatedReviewableOrders.length > 0 ? (
             paginatedReviewableOrders.map(order => (
               <div key={order.order_id} className="mb-4 p-2 border rounded-lg shadow-md">
-                <h2 className="text-lg font-semibold">Order #{order.order_id}</h2>
+                <h2 className="text-lg font-semibold">Order</h2>
                 <p className="text-gray-600 mb-2 text-sm">Order Date: {new Date(order.order_date).toLocaleString()}</p>
                 <div className="grid grid-cols-1 gap-2">
                   {order.reviewable_items.map(item => (

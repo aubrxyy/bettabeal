@@ -63,6 +63,12 @@ export default function EditGalleryPage() {
       return;
     }
 
+    const itemToDelete = galleryItems.find(item => item.gallery_id === galleryId);
+    if (itemToDelete?.is_main) {
+      setError('Cannot delete the main image. Please set another image as the main image first.');
+      return;
+    }
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/seller/gallery/${galleryId}`, {
         method: 'DELETE',
@@ -210,7 +216,7 @@ export default function EditGalleryPage() {
                 <Image
                   src={item.image_url} width={1000} height={1000}
                   alt={productName}
-                  className="size-72 object-cover rounded-md"
+                  className="size-60 object-cover rounded-md"
                 />
                 <button
                   onClick={() => handleSetMainImage(item.gallery_id)}
@@ -229,7 +235,7 @@ export default function EditGalleryPage() {
                 </button>
               </div>
             ))}
-            <div {...getRootProps()} className={`size-80 relative border-4 border-dashed rounded-lg p-4 flex items-center justify-center ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}>
+            <div {...getRootProps()} className={`relative border-4 border-dashed rounded-lg p-4 flex items-center justify-center ${isDragActive ? 'border-blue-500' : 'border-gray-300'}`}>
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p className="text-center text-blue-500">Drop the files here ...</p>

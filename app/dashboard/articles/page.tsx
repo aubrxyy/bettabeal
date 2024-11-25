@@ -159,7 +159,7 @@ export default function Articles() {
                 <Image width={100} height={100} src={`${process.env.NEXT_PUBLIC_API_URL}${article.image}`} alt={article.title} className="w-72 h-52 object-cover rounded-md" />
                 <div className="pr-5">
                   <div className="font-bold mb-2">{article.title}</div>
-                  <p className="text-sm text-gray-600">{article.content}</p>
+                    <p className="text-sm text-gray-600 line-clamp-6">{article.content}</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <button

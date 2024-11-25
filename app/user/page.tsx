@@ -86,13 +86,19 @@ export default function Profile() {
             
             <div className="flex items-center mb-6 pb-6 border-b border-gray-200">
               <div className="w-1/4 text-gray-600">Profile Picture</div>
-              <div className="w-3/4">
-                <Image width={100} height={100}
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${biodata.profile_image}`}
+                <div className="w-3/4">
+                {biodata.profile_image ? (
+                  <Image width={100} height={100}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/${biodata.profile_image}`}
                   alt="Profile"
                   className="w-20 h-20 rounded-full object-cover"
-                />
-              </div>
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] flex items-center justify-center text-2xl font-semibold text-white">
+                  {biodata.full_name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                </div>
             </div>
 
             

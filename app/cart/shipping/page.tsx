@@ -161,7 +161,7 @@ export default function ShippingPage() {
 
       const data = await response.json();
       if (data.code === '000') {
-        router.push(`/cart/checkout?order_id=${data.data.order.order_id}`);
+        router.push(`/cart/checkout?order_id=${data.data.order_id}`);
       } else {
         setError(`Error: ${data.message}`);
       }

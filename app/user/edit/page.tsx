@@ -12,7 +12,6 @@ interface Biodata {
   phone_number: string;
   profile_image: string | File;
   birth_date: string;
-  gender: string;
 }
 
 export default function EditProfile() {
@@ -23,7 +22,6 @@ export default function EditProfile() {
     phone_number: '',
     profile_image: '',
     birth_date: '',
-    gender: '',
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +54,9 @@ export default function EditProfile() {
         const data = await response.json();
         if (data.code === '000' && data.customer) {
           setFormData(data.customer);
-          setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`);
+          if (data.customer.profile_image) {
+            setImagePreview(`${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`);
+          }
         } else {
           setError(`Error: ${data.message}`);
         }
@@ -95,7 +95,6 @@ export default function EditProfile() {
     formDataToSend.append('email', formData.email);
     formDataToSend.append('phone_number', formData.phone_number);
     formDataToSend.append('birth_date', formData.birth_date);
-    formDataToSend.append('gender', formData.gender);
     if (formData.profile_image instanceof File) {
       formDataToSend.append('profile_image', formData.profile_image);
     }
@@ -126,88 +125,85 @@ export default function EditProfile() {
   }
 
   return (
-
-      <div className="bg-white w-full p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-center">
-              <label className="w-1/3 text-sm font-medium text-gray-700">Full Name</label>
-              <input
-                type="text"
-                name="full_name"
-                value={formData.full_name}
-                onChange={handleInputChange}
-                className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex items-center">
-              <label className="w-1/3 text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex items-center">
-              <label className="w-1/3 text-sm font-medium text-gray-700">Phone Number</label>
-              <input
-                type="text"
-                name="phone_number"
-                value={formData.phone_number}
-                onChange={handleInputChange}
-                className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex items-center">
-              <label className="w-1/3 text-sm font-medium text-gray-700">Birth Date</label>
-              <input
-                type="date"
-                name="birth_date"
-                value={formData.birth_date}
-                onChange={handleInputChange}
-                className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div className="flex items-center">
-              <label className="w-1/3 text-sm font-medium text-gray-700">Profile Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
-              />
-            </div>
-            {imagePreview && (
-              <div className="flex justify-center mt-4">
-                <Image width={100} height={100}
-                  src={imagePreview}
-                  alt="Profile Preview"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              </div>
-            )}
+    <div className="bg-white w-full p-6 rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-medium text-gray-700">Full Name</label>
+            <input
+              type="text"
+              name="full_name"
+              value={formData.full_name}
+              onChange={handleInputChange}
+              className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
           </div>
-          <div className='flex flex-row justify-end items-center space-x-3'>
-            <Link href="/user" className="mt-4 px-4 py-2 text-sm border border-[#0F4A99] text-[#0F4A99] rounded-md hover:bg-gray-200 transition-all">
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              className="mt-4 px-4 py-2 text-sm bg-[#0F4A99] text-white rounded-md hover:opacity-80"
-            >
-              Save Changes
-            </button>
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
           </div>
-        </form>
-        
-      </div>
-
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-medium text-gray-700">Phone Number</label>
+            <input
+              type="text"
+              name="phone_number"
+              value={formData.phone_number}
+              onChange={handleInputChange}
+              className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-medium text-gray-700">Birth Date</label>
+            <input
+              type="date"
+              name="birth_date"
+              value={formData.birth_date}
+              onChange={handleInputChange}
+              className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-medium text-gray-700">Profile Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          {imagePreview && (
+            <div className="flex justify-center mt-4">
+              <Image width={100} height={100}
+                src={imagePreview}
+                alt="Profile Preview"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            </div>
+          )}
+        </div>
+        <div className='flex flex-row justify-end items-center space-x-3'>
+          <Link href="/user" className="mt-4 px-4 py-2 text-sm border border-[#0F4A99] text-[#0F4A99] rounded-md hover:bg-gray-200 transition-all">
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 text-sm bg-[#0F4A99] text-white rounded-md hover:opacity-80"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   if (data.code === '000') {
                     setUser({
                       fullName: data.customer.full_name,
-                      profilePicture: `${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}`,
+                      profilePicture: data.customer.profile_image ? `${process.env.NEXT_PUBLIC_API_URL}${data.customer.profile_image}` : undefined,
                     });
                   } else {
                     console.error('Failed to fetch user data');
@@ -103,11 +103,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className='flex flex-col space-y-4 h-4/5'>
         <div className="h-1/5 bg-white rounded-t-xl my-auto text-[#38B6FF] relative flex flex-row items-center justify-start shadow-xl">
           <div className="rounded-full bg-gradient-to-b from-[#0F4A99] to-[#38B6FF] w-16 h-16 flex items-center justify-center text-2xl ml-8 text-white">
-          {user?.profilePicture ? (
-            <Image src={user.profilePicture} width={100} height={100} alt="Profile" className="rounded-full w-full h-full object-cover" />
-          ) : (
-            user && getInitials(user.fullName)
-          )}
+            {user?.profilePicture ? (
+              <Image src={user.profilePicture} width={100} height={100} alt="Profile" className="rounded-full w-full h-full object-cover" />
+            ) : (
+              user && getInitials(user.fullName)
+            )}
           </div>
           <div className="ml-6 text-left text-black">
             <div className={`${poppins.className} text-base leading-tight`}>Hello,</div>
